@@ -22,7 +22,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
     {//Usar listbox
         private Bitmap originalImage;
         private Dictionary<int, Tuple<int, int, int>> centros;
-        private Dictionary<int, List<Dictionary<int, Tuple<int, int, int>>>> conexiones;
+        private Dictionary<int, List<Dictionary<int, VerticeConectado>>> conexiones;
         private bool sobreescribir;
         private Circle primera;
         private Grafo g;
@@ -69,7 +69,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             for (int i = 0; i < conexiones.Count; i++)
             {
                 nodosConectados.Nodes.Add(i.ToString());
-                foreach (Dictionary<int, Tuple<int, int, int>> lista in conexiones[i])
+                foreach(Dictionary<int, VerticeConectado> lista in conexiones[i])
                 {
                     foreach (int id in lista.Keys)
                     {
@@ -134,6 +134,11 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 graphics.Clear(Color.Transparent);
                 graphics.FillEllipse(new SolidBrush(color), x - (radio / 2), y - (radio / 2), radio, radio);
             }
+        }
+
+        private void botonMST_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

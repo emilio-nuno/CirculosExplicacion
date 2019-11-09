@@ -5,6 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+public struct VerticeConectado //Clase para representar vertice conectado 
+{
+    public Tuple<int, int, int> informacion;
+    public double distanciaEuclideana;
+
+    public VerticeConectado(Tuple<int, int, int> informacionVertice, double distanciaPuntos)
+    {
+        informacion = informacionVertice;
+        distanciaEuclideana = distanciaPuntos;
+    }
+}
+
 namespace CirculosExplicacion
 {
     class Grafo
@@ -16,8 +28,8 @@ namespace CirculosExplicacion
         private Color temporal = Color.Magenta;
         private Color pintar = Color.SteelBlue;
         private Dictionary<int, Tuple<int, int, int>> vertices; //La lista de vertices a conectar
-        public Dictionary<int, List<Dictionary<int, Tuple<int, int, int>>>> conexiones; //La lista de vertices y conexiones validas
-        private List<Dictionary<int, Tuple<int, int, int>>> aristas; //Lista que contiene tuplas de vertices, se meten a conexiones
+        public Dictionary<int, List<Dictionary<int, VerticeConectado>>> conexiones; //La lista de vertices y conexiones validas
+        private List<Dictionary<int, VerticeConectado>> aristas; //Lista que contiene tuplas de vertices, se meten a conexiones
         private int valorCercano;
         private List<Tuple<int, int>> cercanos; //Contiene los dos vértices más cercanos
         public Dictionary<int, Dictionary<int, List<Tuple<int, int>>>> caminos; //Se trata de un diccionario para almacenar los puntos entre vertices
@@ -27,7 +39,7 @@ namespace CirculosExplicacion
             this.caminos = new Dictionary<int, Dictionary<int, List<Tuple<int, int>>>>();
             this.cercanos = new List<Tuple<int, int>>();
             this.esperado = esperado;
-            this.conexiones = new Dictionary<int, List<Dictionary<int, Tuple<int, int, int>>>>();
+            this.conexiones = new Dictionary<int, List<Dictionary<int, VerticeConectado>>>();
             this.lapiz = new Pen(pintar, 1);
             this.lapizCercanos = new Pen(Color.Pink, 1);
             this.sample = sample;
@@ -150,14 +162,15 @@ namespace CirculosExplicacion
             for(int i = 0; i < vertices.Count; i++)
             {
                 Dictionary<int, List<Tuple<int, int>>> caminos_temp = new Dictionary<int, List<Tuple<int, int>>>();
-                aristas = new List<Dictionary<int, Tuple<int, int, int>>>();
+                aristas = new List<Dictionary<int, VerticeConectado>>();
                 for (int j = 0; j < vertices.Count; j++)
                 {
                     if (i != j)
                     {
                         if(Bresenham(vertices[i].Item1, vertices[i].Item2, vertices[j].Item1, vertices[j].Item2))
                         {
-                            aristas.Add(new Dictionary<int, Tuple<int, int, int>>(){ { j, vertices[j] } });
+                            VerticeConectado verticeTemporal = new VerticeConectado(vertices[j], DistanciaEuclideana(vertices[i].Item1, vertices[i].Item2, vertices[j].Item1, vertices[j].Item2));
+                            aristas.Add(new Dictionary<int, VerticeConectado>(){ { j, verticeTemporal } });
                             caminos_temp.Add(j, Conseguir_Puntos(vertices[i].Item1, vertices[i].Item2, vertices[j].Item1, vertices[j].Item2));
                         }
                     }
@@ -171,13 +184,13 @@ namespace CirculosExplicacion
         {
             for(int i = 0; i < conexiones.Count; i++)
             {
-                foreach(Dictionary<int, Tuple<int, int, int>> vertice in conexiones[i])
+                foreach(Dictionary<int, VerticeConectado> vertice in conexiones[i])
                 {
-                    foreach(Tuple<int, int, int> informacion in vertice.Values)
+                    foreach(VerticeConectado informacion in vertice.Values)
                     {
                         using (var graphics = Graphics.FromImage(sample))
                         {
-                            graphics.DrawLine(lapiz, vertices[i].Item1, vertices[i].Item2, informacion.Item1, informacion.Item2);
+                            graphics.DrawLine(lapiz, vertices[i].Item1, vertices[i].Item2, informacion.informacion.Item1, informacion.informacion.Item2);
                         }
                     }
                 }
@@ -200,6 +213,11 @@ namespace CirculosExplicacion
                     graphics.DrawString(i.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), vertices[i].Item1, vertices[i].Item2);
                 }
             }
+        }
+
+        private double DistanciaEuclideana(int x, int y, int x2, int y2)
+        {
+            return Math.Sqrt(Math.Pow(x - x2, 2) + Math.Pow(y - y2, 2));
         }
     }
 }
