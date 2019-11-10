@@ -22,7 +22,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
     {//Usar listbox
         private Bitmap originalImage;
         private Dictionary<int, Tuple<int, int, int>> centros;
-        private Dictionary<int, List<Dictionary<int, VerticeConectado>>> conexiones;
+        private Dictionary<int, List<Dictionary<int, VerticeConectado>>> conexiones; //Does not have to be list of dicts
         private bool sobreescribir;
         private Circle primera;
         private Grafo g;
@@ -138,7 +138,28 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void botonMST_Click(object sender, EventArgs e)
         {
-
+            double[,] matriz = new double[conexiones.Count, conexiones.Count];
+            foreach(int id in conexiones.Keys)
+            {
+                foreach(Dictionary<int, VerticeConectado> conexion in conexiones[id])
+                {
+                    foreach(int idConectado in conexion.Keys)
+                    {
+                        matriz[id, idConectado] = conexion[idConectado].distanciaEuclideana;
+                    }
+                }
+            }
         }
+
+        /*private void ImprimirMatriz(double[,] matriz)
+        {
+            for(int i = 0; i < matriz.Length; i++)
+            {
+                for(int j = 0; j < matriz.Length; j++)
+                {
+                    Console.Write("{0} ", matriz[i, j]);
+                }
+            }
+        }*/
     }
 }
