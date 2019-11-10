@@ -42,7 +42,7 @@
             this.botonOrdenar = new System.Windows.Forms.Button();
             this.listaAntes = new System.Windows.Forms.ListBox();
             this.listaDespues = new System.Windows.Forms.ListBox();
-            this.botonMST = new System.Windows.Forms.Button();
+            this.botonARM = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.selectedImage)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -168,22 +168,22 @@
             this.listaDespues.Size = new System.Drawing.Size(149, 84);
             this.listaDespues.TabIndex = 8;
             // 
-            // botonMST
+            // botonARM
             // 
-            this.botonMST.Location = new System.Drawing.Point(705, 232);
-            this.botonMST.Name = "botonMST";
-            this.botonMST.Size = new System.Drawing.Size(149, 50);
-            this.botonMST.TabIndex = 9;
-            this.botonMST.Text = "Crear MST";
-            this.botonMST.UseVisualStyleBackColor = true;
-            this.botonMST.Click += new System.EventHandler(this.botonMST_Click);
+            this.botonARM.Location = new System.Drawing.Point(705, 232);
+            this.botonARM.Name = "botonARM";
+            this.botonARM.Size = new System.Drawing.Size(149, 50);
+            this.botonARM.TabIndex = 9;
+            this.botonARM.Text = "Crear ARM";
+            this.botonARM.UseVisualStyleBackColor = true;
+            this.botonARM.Click += new System.EventHandler(this.botonARM_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1076, 550);
-            this.Controls.Add(this.botonMST);
+            this.Controls.Add(this.botonARM);
             this.Controls.Add(this.listaDespues);
             this.Controls.Add(this.listaAntes);
             this.Controls.Add(this.botonOrdenar);
@@ -217,6 +217,6 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem origenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem destinoToolStripMenuItem;
-        private System.Windows.Forms.Button botonMST;
+        private System.Windows.Forms.Button botonARM;
     }
 }

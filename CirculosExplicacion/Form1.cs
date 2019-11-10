@@ -136,30 +136,92 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
-        private void botonMST_Click(object sender, EventArgs e)
+        private void botonARM_Click(object sender, EventArgs e)
+        {
+            //double[,] matriz = conseguirMatriz();
+            double[,] matriz = new double[5, 5] {{0, 2, 0, 6, 0},
+                      {2, 0, 3, 8, 5},
+                      {0, 3, 0, 0, 7},
+                      {6, 8, 0, 0, 9},
+                      {0, 5, 7, 9, 0},
+                     };
+
+            int V = (int)Math.Sqrt(matriz.Length); //Sacamos el número de nodos que hay
+            int[] padre = new int[V];
+            double[] llave = new double[V];
+            bool[] conjuntoARM = new bool[V];
+
+            for(int i = 0; i < V; i++)
+            {
+                llave[i] = double.MaxValue;
+                conjuntoARM[i] = false;
+            }
+
+            llave[0] = 0;
+            padre[0] = -1;
+
+            for(int contador = 0; contador < V - 1; contador++)
+            {
+                int u = LLaveMin(llave, conjuntoARM);
+                conjuntoARM[u] = true;
+
+                for(int v = 0; v < V; v++)
+                {
+                    if(matriz[u, v] != 0 && conjuntoARM[v] == false && matriz[u, v] < llave[v])
+                    {
+                        padre[v] = u;
+                        llave[v] = matriz[u, v];
+                    }
+                }
+            }
+            ImprimirARM(padre, V, matriz);
+        }
+
+        private int LLaveMin(double[] llave, bool[] conjuntoARM)
+        {
+            /*Retorna el índice mínimo
+             * Argumentos: 
+             * llave: Valores llave usados para conseguir el arista de menor tamaño
+             * conjuntoARM: Representa los vértices que no se han incluido en el ARM
+             */
+            int V = llave.Length;
+            double min = double.MaxValue;
+            int indiceMin = 0;
+
+            for(int v = 0; v < V; v++)
+            {
+                if(conjuntoARM[v] == false && llave[v] < min)
+                {
+                    min = llave[v];
+                    indiceMin = v;
+                }
+            }
+
+            return indiceMin;
+        }
+
+        private void ImprimirARM(int[] padre, int n, double[,] matriz)
+        {
+            int V = padre.Length;
+            Console.WriteLine("Edge   Weight");
+            for (int i = 1; i < V; i++)
+                Console.WriteLine(string.Format("{0} - {1}    {2} ", padre[i], i, matriz[i, padre[i]]));
+        }
+
+        private double[,] conseguirMatriz()
         {
             double[,] matriz = new double[conexiones.Count, conexiones.Count];
-            foreach(int id in conexiones.Keys)
+            foreach (int id in conexiones.Keys)
             {
-                foreach(Dictionary<int, VerticeConectado> conexion in conexiones[id])
+                foreach (Dictionary<int, VerticeConectado> conexion in conexiones[id])
                 {
-                    foreach(int idConectado in conexion.Keys)
+                    foreach (int idConectado in conexion.Keys)
                     {
                         matriz[id, idConectado] = conexion[idConectado].distanciaEuclideana;
                     }
                 }
             }
+            return matriz;
         }
-
-        /*private void ImprimirMatriz(double[,] matriz)
-        {
-            for(int i = 0; i < matriz.Length; i++)
-            {
-                for(int j = 0; j < matriz.Length; j++)
-                {
-                    Console.Write("{0} ", matriz[i, j]);
-                }
-            }
-        }*/
     }
 }
