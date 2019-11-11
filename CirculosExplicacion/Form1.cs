@@ -147,65 +147,44 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                      };
 
             int V = (int)Math.Sqrt(matriz.Length); //Sacamos el número de nodos que hay
-            int[] padre = new int[V];
-            double[] llave = new double[V];
-            bool[] conjuntoARM = new bool[V];
+            bool[] seleccionados = new bool[V];
 
-            for(int i = 0; i < V; i++)
+            int numeroArista;
+            numeroArista = 0; //Contador arista
+
+            seleccionados[2] = true; //Seleccionamos el nodo raíz
+
+            int x, y;
+            Console.WriteLine("Edge : Weight");
+
+            //Un ARM siempre tendrá V-1 aristas, por el nodo raíz
+            while(numeroArista < V - 1)
             {
-                llave[i] = double.MaxValue;
-                conjuntoARM[i] = false;
-            }
+                double min = double.MaxValue;
+                x = y = 0;
 
-            llave[0] = 0;
-            padre[0] = -1;
-
-            for(int contador = 0; contador < V - 1; contador++)
-            {
-                int u = LLaveMin(llave, conjuntoARM);
-                conjuntoARM[u] = true;
-
-                for(int v = 0; v < V; v++)
+                for(int i = 0; i < V; i++)
                 {
-                    if(matriz[u, v] != 0 && conjuntoARM[v] == false && matriz[u, v] < llave[v])
+                    if (seleccionados[i])
                     {
-                        padre[v] = u;
-                        llave[v] = matriz[u, v];
+                        for(int j = 0; j < V; j++)
+                        {
+                            if(!seleccionados[j] && matriz[i, j] != 0)
+                            {
+                                if(min > matriz[i, j])
+                                {
+                                    min = matriz[i, j];
+                                    x = i;
+                                    y = j;
+                                }
+                            }
+                        }
                     }
                 }
+                Console.WriteLine("{0} - {1} :  {2}", x, y, matriz[x, y]);
+                seleccionados[y] = true;
+                numeroArista++;
             }
-            ImprimirARM(padre, V, matriz);
-        }
-
-        private int LLaveMin(double[] llave, bool[] conjuntoARM)
-        {
-            /*Retorna el índice mínimo
-             * Argumentos: 
-             * llave: Valores llave usados para conseguir el arista de menor tamaño
-             * conjuntoARM: Representa los vértices que no se han incluido en el ARM
-             */
-            int V = llave.Length;
-            double min = double.MaxValue;
-            int indiceMin = 0;
-
-            for(int v = 0; v < V; v++)
-            {
-                if(conjuntoARM[v] == false && llave[v] < min)
-                {
-                    min = llave[v];
-                    indiceMin = v;
-                }
-            }
-
-            return indiceMin;
-        }
-
-        private void ImprimirARM(int[] padre, int n, double[,] matriz)
-        {
-            int V = padre.Length;
-            Console.WriteLine("Edge   Weight");
-            for (int i = 1; i < V; i++)
-                Console.WriteLine(string.Format("{0} - {1}    {2} ", padre[i], i, matriz[i, padre[i]]));
         }
 
         private double[,] conseguirMatriz()
