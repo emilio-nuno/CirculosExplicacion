@@ -136,15 +136,17 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
+        private void DibujarArista(int idOrigen, int idDestino)
+        {
+            using (var graphics = Graphics.FromImage(selectedImage.Image))
+            {
+                graphics.DrawLine(Pens.Red, centros[idOrigen].Item1, centros[idOrigen].Item2, centros[idDestino].Item1, centros[idDestino].Item2);
+            }
+        }
+
         private void botonARM_Click(object sender, EventArgs e)
         {
-            //double[,] matriz = conseguirMatriz();
-            double[,] matriz = new double[5, 5] {{0, 2, 0, 6, 0},
-                      {2, 0, 3, 8, 5},
-                      {0, 3, 0, 0, 7},
-                      {6, 8, 0, 0, 9},
-                      {0, 5, 7, 9, 0},
-                     };
+            double[,] matriz = conseguirMatriz();
 
             int V = (int)Math.Sqrt(matriz.Length); //Sacamos el número de nodos que hay
             bool[] seleccionados = new bool[V];
@@ -152,7 +154,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             int numeroArista;
             numeroArista = 0; //Contador arista
 
-            seleccionados[2] = true; //Seleccionamos el nodo raíz
+            seleccionados[0] = true; //Seleccionamos el nodo raíz
 
             int x, y;
             Console.WriteLine("Edge : Weight");
@@ -182,6 +184,8 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                     }
                 }
                 Console.WriteLine("{0} - {1} :  {2}", x, y, matriz[x, y]);
+                DibujarArista(x, y);
+                selectedImage.Refresh();
                 seleccionados[y] = true;
                 numeroArista++;
             }
