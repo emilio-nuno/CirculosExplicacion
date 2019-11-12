@@ -144,36 +144,32 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
-        private void botonARM_Click(object sender, EventArgs e)
+        private void GenerarARM(double[,] matriz, int inicial, bool[] seleccionados)
         {
-            double[,] matriz = conseguirMatriz();
-
-            int V = (int)Math.Sqrt(matriz.Length); //Sacamos el número de nodos que hay
-            bool[] seleccionados = new bool[V];
-
+            int V = (int)Math.Sqrt(matriz.Length);
             int numeroArista;
             numeroArista = 0; //Contador arista
 
-            seleccionados[0] = true; //Seleccionamos el nodo raíz
+            seleccionados[inicial] = true; //Seleccionamos el nodo raíz
 
             int x, y;
             Console.WriteLine("Edge : Weight");
 
             //Un ARM siempre tendrá V-1 aristas, por el nodo raíz
-            while(numeroArista < V - 1)
+            while (numeroArista < V - 1)
             {
                 double min = double.MaxValue;
                 x = y = 0;
 
-                for(int i = 0; i < V; i++)
+                for (int i = 0; i < V; i++)
                 {
                     if (seleccionados[i])
                     {
-                        for(int j = 0; j < V; j++)
+                        for (int j = 0; j < V; j++)
                         {
-                            if(!seleccionados[j] && matriz[i, j] != 0)
+                            if (!seleccionados[j] && matriz[i, j] != 0)
                             {
-                                if(min > matriz[i, j])
+                                if (min > matriz[i, j])
                                 {
                                     min = matriz[i, j];
                                     x = i;
@@ -183,7 +179,10 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                         }
                     }
                 }
-                Console.WriteLine("{0} - {1} :  {2}", x, y, matriz[x, y]);
+                if (x != 0 || y != 0)
+                {
+                    Console.WriteLine("{0} - {1} :  {2}", x, y, matriz[x, y]);
+                }
                 DibujarArista(x, y);
                 selectedImage.Refresh();
                 seleccionados[y] = true;
@@ -191,7 +190,23 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
-        private double[,] conseguirMatriz()
+        private void botonARM_Click(object sender, EventArgs e)
+        {
+            double[,] matriz = ConseguirMatriz();
+            int V = (int)Math.Sqrt(matriz.Length); //Sacamos el número de nodos que hay
+            bool[] completados = new bool[V];
+            GenerarARM(matriz, 4, completados); //Si hay componentes disjuntos, crea el bosque
+            for(int i = 0; i < V; i++)
+            {
+                if(completados[i] == false)
+                {
+                    GenerarARM(matriz, i, completados);
+                }
+            }
+            Console.WriteLine("TERMINADO");
+        }
+
+        private double[,] ConseguirMatriz()
         {
             double[,] matriz = new double[conexiones.Count, conexiones.Count];
             foreach (int id in conexiones.Keys)
