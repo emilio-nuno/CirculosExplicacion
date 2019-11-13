@@ -345,10 +345,6 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             visitados[i] = true;
             for (j = 0; j < V; j++)
             {
-                /*DibujarCirculo(centros[i].Item1, centros[i].Item2, bmp, 10, Color.Red);
-                selectedImage.Image = bmp;
-                selectedImage.Refresh();
-                Thread.Sleep(100);*/
                 if (!visitados[j] && ARM[i, j] != 0 && !encontradoDFS)
                 {
                     Console.WriteLine("Vamos del nodo {0} al nodo {1}", i, j);
