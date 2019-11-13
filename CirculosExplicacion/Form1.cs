@@ -157,7 +157,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             seleccionados[inicial] = true; //Seleccionamos el nodo raíz
 
             int x, y;
-            Console.WriteLine("Edge : Weight");
+            Console.WriteLine("Arista : Peso");
 
             //Un ARM siempre tendrá V-1 aristas, por el nodo raíz
             while (numeroArista < V - 1)
@@ -332,13 +332,12 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void DFS(int i, bool[] visitados, int buscado, Bitmap bmp)
         {
-            if(i == buscado)
+            selectedImage.BackgroundImage = originalImage;
+            selectedImage.BackgroundImageLayout = ImageLayout.Zoom; //Para que encuadre
+
+            if (i == buscado)
             {
                 encontradoDFS = true;
-            }
-            if (encontradoDFS)
-            {
-                return;
             }
 
             int V = (int)Math.Sqrt(ARM.Length);
@@ -346,12 +345,32 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             visitados[i] = true;
             for (j = 0; j < V; j++)
             {
-                if (!visitados[j] && ARM[i, j] != 0)
+                /*DibujarCirculo(centros[i].Item1, centros[i].Item2, bmp, 10, Color.Red);
+                selectedImage.Image = bmp;
+                selectedImage.Refresh();
+                Thread.Sleep(100);*/
+                if (!visitados[j] && ARM[i, j] != 0 && !encontradoDFS)
                 {
                     Console.WriteLine("Vamos del nodo {0} al nodo {1}", i, j);
+                    DibujarCirculo(centros[i].Item1, centros[i].Item2, bmp, 10, Color.Red);
+                    selectedImage.Image = bmp;
+                    selectedImage.Refresh();
+                    Thread.Sleep(250);
+
                     DibujarCirculo(centros[j].Item1, centros[j].Item2, bmp, 10, Color.Red);
+                    selectedImage.Image = bmp;
+                    selectedImage.Refresh();
+                    Thread.Sleep(250);
                     DFS(j, visitados, buscado, bmp);
                 }
+            }
+            Console.WriteLine("Se terminó el nodo {0}", i);
+            if (!encontradoDFS)
+            {
+                DibujarCirculo(centros[i].Item1, centros[i].Item2, bmp, 10, Color.Red);
+                selectedImage.Image = bmp;
+                selectedImage.Refresh();
+                Thread.Sleep(500);
             }
         }
 
