@@ -330,7 +330,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             Console.WriteLine("Costo Minimo: {0}", costoMin); //Costo del ARM
         }
 
-        private void DFS(int i, bool[] visitados, int buscado)
+        private void DFS(int i, bool[] visitados, int buscado, Bitmap bmp)
         {
             if(i == buscado)
             {
@@ -349,7 +349,8 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 if (!visitados[j] && ARM[i, j] != 0)
                 {
                     Console.WriteLine("Vamos del nodo {0} al nodo {1}", i, j);
-                    DFS(j, visitados, buscado);
+                    DibujarCirculo(centros[j].Item1, centros[j].Item2, bmp, 10, Color.Red);
+                    DFS(j, visitados, buscado, bmp);
                 }
             }
         }
@@ -360,7 +361,10 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             bool[] visitados = new bool[V];
             int origen = Int32.Parse(txtOrigen.Text);
             int destino = Int32.Parse(txtDestino.Text);
-            DFS(origen, visitados, destino);
+            using (Bitmap bmp = new Bitmap(originalImage))
+            {
+                DFS(origen, visitados, destino, bmp);
+            }
             if(encontradoDFS)
             {
                 Console.WriteLine("Se encuentra");
