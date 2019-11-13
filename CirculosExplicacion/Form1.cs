@@ -144,7 +144,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
-        private void GenerarARM(double[,] matriz, int inicial, bool[] seleccionados)
+        private void GenerarARMPrim(double[,] matriz, int inicial, bool[] seleccionados)
         {
             int V = (int)Math.Sqrt(matriz.Length);
             int numeroArista;
@@ -194,20 +194,19 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
-        private void botonARM_Click(object sender, EventArgs e)
+        private void botonPrim_Click(object sender, EventArgs e)
         {
             double[,] matriz = ConseguirMatriz();
             int V = (int)Math.Sqrt(matriz.Length); //Sacamos el número de nodos que hay
             bool[] completados = new bool[V];
-            GenerarARM(matriz, 5, completados); //Si hay componentes disjuntos, crea el bosque
+            GenerarARMPrim(matriz, 5, completados); //Si hay componentes disjuntos, crea el bosque
             for(int i = 0; i < V; i++)
             {
-                if(completados[i] == false)
+                if(completados[i] == false) //Agregamos esto para crear bosque
                 {
-                    GenerarARM(matriz, i, completados);
+                    GenerarARMPrim(matriz, i, completados);
                 }
             }
-            Console.WriteLine("TERMINADO");
         }
 
         private double[,] ConseguirMatriz()
@@ -225,5 +224,84 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
             return matriz;
         }
+
+        private void botonKruskal_Click(object sender, EventArgs e)
+        {
+            double[,] matriz = ConseguirMatriz();
+            int V = (int)Math.Sqrt(matriz.Length);
+            int[] padre = new int[V];
+
+            for(int i = 0; i < V; i++) //Convertimos matriz a apropiada para Kruskal
+            {
+                for(int j = 0; j < V; j++)
+                {
+                    if(matriz[i, j] == 0)
+                    {
+                        matriz[i, j] = double.MaxValue;
+                    }
+                }
+            }
+            GenerarARMKruskal(padre, matriz);
+        }
+
+        private  int Encontrar(int i, int[] padre)
+        {
+            while (padre[i] != i)
+            {
+                i = padre[i];
+            }
+            return i;
+        }
+
+        private void Union(int i, int j, int[] padre)
+        {
+            int a = Encontrar(i, padre);
+            int b = Encontrar(j, padre);
+            padre[a] = b;
+        }
+
+        private void GenerarARMKruskal(int[] padre, double[,] matriz)
+        {
+            int V = (int)Math.Sqrt(matriz.Length);
+
+            double costoMin = 0;
+            for (int i = 0; i < V; i++)
+                padre[i] = i;
+
+            int numArista = 0;
+            while (numArista < V - 1)
+            {
+                double min = double.MaxValue;
+                int a = -1, b = -1;
+
+                for (int i = 0; i < V; i++)
+                {
+                    for (int j = 0; j < V; j++)
+                    {
+                        if (Encontrar(i, padre) != Encontrar(j, padre) && matriz[i, j] < min)
+                        {
+                            min = matriz[i, j];
+                            a = i;
+                            b = j;
+                        }
+                    }
+                }
+                if(a != -1 && b != -1) //Solo calcula peso para grafos con componentes disjuntos
+                {
+                    Union(a, b, padre);
+                    Console.WriteLine("Arista {0}: {1} - {2} con coste {3}", numArista++, a, b, min);
+                    DibujarArista(a, b);
+                    selectedImage.Refresh();
+                    costoMin += min;
+                }
+                else
+                {
+                    Console.WriteLine("Costo Minimo: {0}", costoMin); //Costo del ARM
+                    return;
+                }
+            }
+            Console.WriteLine("Costo Minimo: {0}", costoMin); //Costo del ARM
+        }
+
     }
 }

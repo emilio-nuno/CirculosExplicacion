@@ -42,7 +42,8 @@
             this.botonOrdenar = new System.Windows.Forms.Button();
             this.listaAntes = new System.Windows.Forms.ListBox();
             this.listaDespues = new System.Windows.Forms.ListBox();
-            this.botonARM = new System.Windows.Forms.Button();
+            this.botonPrim = new System.Windows.Forms.Button();
+            this.botonKruskal = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.selectedImage)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -168,22 +169,33 @@
             this.listaDespues.Size = new System.Drawing.Size(149, 84);
             this.listaDespues.TabIndex = 8;
             // 
-            // botonARM
+            // botonPrim
             // 
-            this.botonARM.Location = new System.Drawing.Point(705, 232);
-            this.botonARM.Name = "botonARM";
-            this.botonARM.Size = new System.Drawing.Size(149, 50);
-            this.botonARM.TabIndex = 9;
-            this.botonARM.Text = "Crear ARM";
-            this.botonARM.UseVisualStyleBackColor = true;
-            this.botonARM.Click += new System.EventHandler(this.botonARM_Click);
+            this.botonPrim.Location = new System.Drawing.Point(705, 232);
+            this.botonPrim.Name = "botonPrim";
+            this.botonPrim.Size = new System.Drawing.Size(149, 50);
+            this.botonPrim.TabIndex = 9;
+            this.botonPrim.Text = "Prim";
+            this.botonPrim.UseVisualStyleBackColor = true;
+            this.botonPrim.Click += new System.EventHandler(this.botonPrim_Click);
+            // 
+            // botonKruskal
+            // 
+            this.botonKruskal.Location = new System.Drawing.Point(879, 232);
+            this.botonKruskal.Name = "botonKruskal";
+            this.botonKruskal.Size = new System.Drawing.Size(149, 50);
+            this.botonKruskal.TabIndex = 10;
+            this.botonKruskal.Text = "Kruskal";
+            this.botonKruskal.UseVisualStyleBackColor = true;
+            this.botonKruskal.Click += new System.EventHandler(this.botonKruskal_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1076, 550);
-            this.Controls.Add(this.botonARM);
+            this.Controls.Add(this.botonKruskal);
+            this.Controls.Add(this.botonPrim);
             this.Controls.Add(this.listaDespues);
             this.Controls.Add(this.listaAntes);
             this.Controls.Add(this.botonOrdenar);
@@ -217,6 +229,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem origenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem destinoToolStripMenuItem;
-        private System.Windows.Forms.Button botonARM;
+        private System.Windows.Forms.Button botonPrim;
+        private System.Windows.Forms.Button botonKruskal;
     }
 }
