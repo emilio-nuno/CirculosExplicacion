@@ -144,7 +144,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
-        private void GenerarARMPrim(double[,] matriz, int inicial, bool[] seleccionados)
+        private void GenerarARMPrim(double[,] matriz, int inicial, bool[] seleccionados, double[,] ARM)
         {
             int V = (int)Math.Sqrt(matriz.Length);
             int numeroArista;
@@ -182,6 +182,8 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 if (x != -1 && y != -1) //Cuando x y y sean el valor inicial dado (-1), ya no se encuentran minimos en el componente
                 {
                     Console.WriteLine("{0} - {1} :  {2}", x, y, matriz[x, y]);
+                    ARM[x, y] = matriz[x, y]; //Lo hacemos no dirigido
+                    ARM[y, x] = matriz[x, y];
                     DibujarArista(x, y);
                     selectedImage.Refresh();
                     seleccionados[y] = true;
@@ -196,15 +198,17 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void botonPrim_Click(object sender, EventArgs e)
         {
+            double[,] ARM = ConseguirMatrizARM();
             double[,] matriz = ConseguirMatriz();
+
             int V = (int)Math.Sqrt(matriz.Length); //Sacamos el número de nodos que hay
             bool[] completados = new bool[V];
-            GenerarARMPrim(matriz, 5, completados); //Si hay componentes disjuntos, crea el bosque
+            GenerarARMPrim(matriz, 5, completados, ARM); //Si hay componentes disjuntos, crea el bosque
             for(int i = 0; i < V; i++)
             {
                 if(completados[i] == false) //Agregamos esto para crear bosque
                 {
-                    GenerarARMPrim(matriz, i, completados);
+                    GenerarARMPrim(matriz, i, completados, ARM);
                 }
             }
         }
@@ -225,9 +229,27 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             return matriz;
         }
 
+        private double[,] ConseguirMatrizARM()
+        {
+            double[,] matriz = new double[conexiones.Count, conexiones.Count];
+            foreach (int id in conexiones.Keys)
+            {
+                foreach (Dictionary<int, VerticeConectado> conexion in conexiones[id])
+                {
+                    foreach (int idConectado in conexion.Keys)
+                    {
+                        matriz[id, idConectado] = 0;
+                    }
+                }
+            }
+            return matriz;
+        }
+
         private void botonKruskal_Click(object sender, EventArgs e)
         {
+            double[,] ARM = ConseguirMatrizARM();
             double[,] matriz = ConseguirMatriz();
+
             int V = (int)Math.Sqrt(matriz.Length);
             int[] padre = new int[V];
 
@@ -241,7 +263,8 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                     }
                 }
             }
-            GenerarARMKruskal(padre, matriz);
+            GenerarARMKruskal(padre, matriz, ARM);
+            Console.WriteLine("Terminado");
         }
 
         private  int Encontrar(int i, int[] padre)
@@ -260,7 +283,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             padre[a] = b;
         }
 
-        private void GenerarARMKruskal(int[] padre, double[,] matriz)
+        private void GenerarARMKruskal(int[] padre, double[,] matriz, double[,] ARM)
         {
             int V = (int)Math.Sqrt(matriz.Length);
 
@@ -290,6 +313,8 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 {
                     Union(a, b, padre);
                     Console.WriteLine("Arista {0}: {1} - {2} con coste {3}", numArista++, a, b, min);
+                    ARM[a, b] = min;
+                    ARM[b, a] = min;
                     DibujarArista(a, b);
                     selectedImage.Refresh();
                     costoMin += min;
