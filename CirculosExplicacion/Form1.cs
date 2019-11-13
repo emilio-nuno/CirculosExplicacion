@@ -29,12 +29,15 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
         private Dictionary<int, Dictionary<int, List<Tuple<int, int>>>> caminos;
         private List<Agente> agentes;
         private Señuelo señuelo;
+        private double[,] ARM;
+        private bool encontradoDFS;
 
         public Form1()
         {
             this.agentes = new List<Agente>();
             InitializeComponent();
             this.sobreescribir = false;
+            this.encontradoDFS = false;
         }
 
         private void botonSelect_Click(object sender, EventArgs e)
@@ -78,6 +81,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 }
             }
             sobreescribir = true;
+            ARM = ConseguirMatrizARM();
         }
 
         private void Ordenar()
@@ -144,7 +148,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
-        private void GenerarARMPrim(double[,] matriz, int inicial, bool[] seleccionados, double[,] ARM)
+        private void GenerarARMPrim(double[,] matriz, int inicial, bool[] seleccionados)
         {
             int V = (int)Math.Sqrt(matriz.Length);
             int numeroArista;
@@ -198,17 +202,16 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void botonPrim_Click(object sender, EventArgs e)
         {
-            double[,] ARM = ConseguirMatrizARM();
             double[,] matriz = ConseguirMatriz();
 
             int V = (int)Math.Sqrt(matriz.Length); //Sacamos el número de nodos que hay
             bool[] completados = new bool[V];
-            GenerarARMPrim(matriz, 5, completados, ARM); //Si hay componentes disjuntos, crea el bosque
+            GenerarARMPrim(matriz, 5, completados); //Si hay componentes disjuntos, crea el bosque
             for(int i = 0; i < V; i++)
             {
                 if(completados[i] == false) //Agregamos esto para crear bosque
                 {
-                    GenerarARMPrim(matriz, i, completados, ARM);
+                    GenerarARMPrim(matriz, i, completados);
                 }
             }
         }
@@ -247,7 +250,6 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void botonKruskal_Click(object sender, EventArgs e)
         {
-            double[,] ARM = ConseguirMatrizARM();
             double[,] matriz = ConseguirMatriz();
 
             int V = (int)Math.Sqrt(matriz.Length);
@@ -263,7 +265,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                     }
                 }
             }
-            GenerarARMKruskal(padre, matriz, ARM);
+            GenerarARMKruskal(padre, matriz);
             Console.WriteLine("Terminado");
         }
 
@@ -283,7 +285,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             padre[a] = b;
         }
 
-        private void GenerarARMKruskal(int[] padre, double[,] matriz, double[,] ARM)
+        private void GenerarARMKruskal(int[] padre, double[,] matriz)
         {
             int V = (int)Math.Sqrt(matriz.Length);
 
@@ -328,5 +330,45 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             Console.WriteLine("Costo Minimo: {0}", costoMin); //Costo del ARM
         }
 
+        private void DFS(int i, bool[] visitados, int buscado)
+        {
+            if(i == buscado)
+            {
+                encontradoDFS = true;
+            }
+            if (encontradoDFS)
+            {
+                return;
+            }
+
+            int V = (int)Math.Sqrt(ARM.Length);
+            int j;
+            visitados[i] = true;
+            for (j = 0; j < V; j++)
+            {
+                if (!visitados[j] && ARM[i, j] != 0)
+                {
+                    Console.WriteLine("Vamos del nodo {0} al nodo {1}", i, j);
+                    DFS(j, visitados, buscado);
+                }
+            }
+        }
+
+        private void btnBuscar_Click(object sender, EventArgs e)
+        {
+            int V = (int)Math.Sqrt(ARM.Length);
+            bool[] visitados = new bool[V];
+            int origen = Int32.Parse(txtOrigen.Text);
+            int destino = Int32.Parse(txtDestino.Text);
+            DFS(origen, visitados, destino);
+            if(encontradoDFS)
+            {
+                Console.WriteLine("Se encuentra");
+            }
+            else
+            {
+                Console.WriteLine("No se encuentra");
+            }
+        }
     }
 }

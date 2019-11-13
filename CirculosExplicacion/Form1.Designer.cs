@@ -44,6 +44,10 @@
             this.listaDespues = new System.Windows.Forms.ListBox();
             this.botonPrim = new System.Windows.Forms.Button();
             this.botonKruskal = new System.Windows.Forms.Button();
+            this.txtOrigen = new System.Windows.Forms.TextBox();
+            this.txtDestino = new System.Windows.Forms.TextBox();
+            this.btnBuscar = new System.Windows.Forms.Button();
+            this.btnFlecha = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.selectedImage)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -153,7 +157,7 @@
             // 
             this.listaAntes.FormattingEnabled = true;
             this.listaAntes.ItemHeight = 16;
-            this.listaAntes.Location = new System.Drawing.Point(704, 332);
+            this.listaAntes.Location = new System.Drawing.Point(705, 455);
             this.listaAntes.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listaAntes.Name = "listaAntes";
             this.listaAntes.Size = new System.Drawing.Size(149, 84);
@@ -163,7 +167,7 @@
             // 
             this.listaDespues.FormattingEnabled = true;
             this.listaDespues.ItemHeight = 16;
-            this.listaDespues.Location = new System.Drawing.Point(879, 332);
+            this.listaDespues.Location = new System.Drawing.Point(880, 455);
             this.listaDespues.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listaDespues.Name = "listaDespues";
             this.listaDespues.Size = new System.Drawing.Size(149, 84);
@@ -189,11 +193,48 @@
             this.botonKruskal.UseVisualStyleBackColor = true;
             this.botonKruskal.Click += new System.EventHandler(this.botonKruskal_Click);
             // 
+            // txtOrigen
+            // 
+            this.txtOrigen.Location = new System.Drawing.Point(719, 315);
+            this.txtOrigen.Name = "txtOrigen";
+            this.txtOrigen.Size = new System.Drawing.Size(100, 22);
+            this.txtOrigen.TabIndex = 11;
+            // 
+            // txtDestino
+            // 
+            this.txtDestino.Location = new System.Drawing.Point(964, 315);
+            this.txtDestino.Name = "txtDestino";
+            this.txtDestino.Size = new System.Drawing.Size(100, 22);
+            this.txtDestino.TabIndex = 12;
+            // 
+            // btnBuscar
+            // 
+            this.btnBuscar.Location = new System.Drawing.Point(814, 343);
+            this.btnBuscar.Name = "btnBuscar";
+            this.btnBuscar.Size = new System.Drawing.Size(149, 50);
+            this.btnBuscar.TabIndex = 13;
+            this.btnBuscar.Text = "Buscar";
+            this.btnBuscar.UseVisualStyleBackColor = true;
+            this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
+            // 
+            // btnFlecha
+            // 
+            this.btnFlecha.Location = new System.Drawing.Point(879, 314);
+            this.btnFlecha.Name = "btnFlecha";
+            this.btnFlecha.Size = new System.Drawing.Size(29, 23);
+            this.btnFlecha.TabIndex = 14;
+            this.btnFlecha.Text = "→";
+            this.btnFlecha.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1076, 550);
+            this.Controls.Add(this.btnFlecha);
+            this.Controls.Add(this.btnBuscar);
+            this.Controls.Add(this.txtDestino);
+            this.Controls.Add(this.txtOrigen);
             this.Controls.Add(this.botonKruskal);
             this.Controls.Add(this.botonPrim);
             this.Controls.Add(this.listaDespues);
@@ -211,6 +252,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.selectedImage)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -231,5 +273,9 @@
         private System.Windows.Forms.ToolStripMenuItem destinoToolStripMenuItem;
         private System.Windows.Forms.Button botonPrim;
         private System.Windows.Forms.Button botonKruskal;
+        private System.Windows.Forms.TextBox txtOrigen;
+        private System.Windows.Forms.TextBox txtDestino;
+        private System.Windows.Forms.Button btnBuscar;
+        private System.Windows.Forms.Button btnFlecha;
     }
 }
