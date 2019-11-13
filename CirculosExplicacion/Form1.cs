@@ -159,7 +159,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             while (numeroArista < V - 1)
             {
                 double min = double.MaxValue;
-                x = y = 0;
+                x = y = -1;
 
                 for (int i = 0; i < V; i++)
                 {
@@ -179,14 +179,18 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                         }
                     }
                 }
-                if (x != 0 || y != 0)
+                if (x != -1 && y != -1) //Cuando x y y sean el valor inicial dado (-1), ya no se encuentran minimos en el componente
                 {
                     Console.WriteLine("{0} - {1} :  {2}", x, y, matriz[x, y]);
+                    DibujarArista(x, y);
+                    selectedImage.Refresh();
+                    seleccionados[y] = true;
+                    numeroArista++;
                 }
-                DibujarArista(x, y);
-                selectedImage.Refresh();
-                seleccionados[y] = true;
-                numeroArista++;
+                else
+                {
+                    return;
+                }
             }
         }
 
@@ -195,7 +199,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             double[,] matriz = ConseguirMatriz();
             int V = (int)Math.Sqrt(matriz.Length); //Sacamos el número de nodos que hay
             bool[] completados = new bool[V];
-            GenerarARM(matriz, 4, completados); //Si hay componentes disjuntos, crea el bosque
+            GenerarARM(matriz, 5, completados); //Si hay componentes disjuntos, crea el bosque
             for(int i = 0; i < V; i++)
             {
                 if(completados[i] == false)
