@@ -31,6 +31,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
         private Señuelo señuelo;
         private double[,] ARM;
         private bool encontradoDFS;
+        private double pesoPrim, pesoKruskal;
 
         public Form1()
         {
@@ -140,15 +141,15 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
-        private void DibujarArista(int idOrigen, int idDestino)
+        private void DibujarArista(int idOrigen, int idDestino, Bitmap imagen)
         {
-            using (var graphics = Graphics.FromImage(selectedImage.Image))
+            using (var graphics = Graphics.FromImage(imagen))
             {
                 graphics.DrawLine(Pens.Red, centros[idOrigen].Item1, centros[idOrigen].Item2, centros[idDestino].Item1, centros[idDestino].Item2);
             }
         }
 
-        private void GenerarARMPrim(double[,] matriz, int inicial, bool[] seleccionados)
+        private void GenerarARMPrim(double[,] matriz, int inicial, bool[] seleccionados, Bitmap image)
         {
             int V = (int)Math.Sqrt(matriz.Length);
             int numeroArista;
@@ -188,10 +189,11 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                     Console.WriteLine("{0} - {1} :  {2}", x, y, matriz[x, y]);
                     ARM[x, y] = matriz[x, y]; //Lo hacemos no dirigido
                     ARM[y, x] = matriz[x, y];
-                    DibujarArista(x, y);
+                    DibujarArista(x, y, image);
                     selectedImage.Refresh();
                     seleccionados[y] = true;
                     numeroArista++;
+                    pesoPrim += matriz[x, y];
                 }
                 else
                 {
@@ -206,12 +208,12 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
             int V = (int)Math.Sqrt(matriz.Length); //Sacamos el número de nodos que hay
             bool[] completados = new bool[V];
-            GenerarARMPrim(matriz, 5, completados); //Si hay componentes disjuntos, crea el bosque
+            GenerarARMPrim(matriz, 5, completados, originalImage); //Si hay componentes disjuntos, crea el bosque
             for(int i = 0; i < V; i++)
             {
                 if(completados[i] == false) //Agregamos esto para crear bosque
                 {
-                    GenerarARMPrim(matriz, i, completados);
+                    GenerarARMPrim(matriz, i, completados, originalImage);
                 }
             }
         }
@@ -265,8 +267,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                     }
                 }
             }
-            GenerarARMKruskal(padre, matriz);
-            Console.WriteLine("Terminado");
+            GenerarARMKruskal(padre, matriz, originalImage);
         }
 
         private  int Encontrar(int i, int[] padre)
@@ -285,7 +286,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             padre[a] = b;
         }
 
-        private void GenerarARMKruskal(int[] padre, double[,] matriz)
+        private void GenerarARMKruskal(int[] padre, double[,] matriz, Bitmap imagen)
         {
             int V = (int)Math.Sqrt(matriz.Length);
 
@@ -317,17 +318,19 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                     Console.WriteLine("Arista {0}: {1} - {2} con coste {3}", numArista++, a, b, min);
                     ARM[a, b] = min;
                     ARM[b, a] = min;
-                    DibujarArista(a, b);
+                    DibujarArista(a, b, imagen);
                     selectedImage.Refresh();
                     costoMin += min;
                 }
                 else
                 {
                     Console.WriteLine("Costo Minimo: {0}", costoMin); //Costo del ARM
+                    pesoKruskal = costoMin;
                     return;
                 }
             }
             Console.WriteLine("Costo Minimo: {0}", costoMin); //Costo del ARM
+            pesoKruskal = costoMin;
         }
 
         private void DFS(int i, bool[] visitados, int buscado, Bitmap bmp)
@@ -388,6 +391,54 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             {
                 Console.WriteLine("No se encuentra");
             }
+        }
+
+        private void btnGenerarAmbos_Click(object sender, EventArgs e)
+        {
+            Bitmap prim = new Bitmap(originalImage);
+            Bitmap kruskal = new Bitmap(originalImage);
+
+            double[,] matrizKruskal = ConseguirMatriz();
+
+            int V = (int)Math.Sqrt(matrizKruskal.Length);
+            int[] padre = new int[V];
+
+            for (int i = 0; i < V; i++) //Convertimos matriz a apropiada para Kruskal
+            {
+                for (int j = 0; j < V; j++)
+                {
+                    if (matrizKruskal[i, j] == 0)
+                    {
+                        matrizKruskal[i, j] = double.MaxValue;
+                    }
+                }
+            }
+            GenerarARMKruskal(padre, matrizKruskal, kruskal);
+
+            double[,] matrizPrim = ConseguirMatriz();
+
+            V = (int)Math.Sqrt(matrizPrim.Length); //Sacamos el número de nodos que hay
+            bool[] completados = new bool[V];
+            GenerarARMPrim(matrizPrim, 8, completados, prim); //Si hay componentes disjuntos, crea el bosque
+            for (int i = 0; i < V; i++)
+            {
+                if (completados[i] == false) //Agregamos esto para crear bosque
+                {
+                    GenerarARMPrim(matrizPrim, i, completados, prim);
+                }
+            }
+
+            using (var graphics = Graphics.FromImage(prim))
+            {
+                graphics.DrawString("Peso: " + pesoPrim.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), 0, 0);
+            }
+            using (var graphics = Graphics.FromImage(kruskal))
+            {
+                graphics.DrawString("Peso: " + pesoKruskal.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), 0, 0);
+            }
+
+            Form2 arboles = new Form2(prim, kruskal);
+            arboles.Show();
         }
     }
 }

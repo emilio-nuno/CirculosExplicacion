@@ -190,7 +190,7 @@ namespace CirculosExplicacion
                     {
                         using (var graphics = Graphics.FromImage(sample))
                         {
-                            graphics.DrawLine(lapiz, vertices[i].Item1, vertices[i].Item2, informacion.informacion.Item1, informacion.informacion.Item2);
+                            //graphics.DrawLine(lapiz, vertices[i].Item1, vertices[i].Item2, informacion.informacion.Item1, informacion.informacion.Item2);
                         }
                     }
                 }

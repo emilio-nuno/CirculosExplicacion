@@ -48,6 +48,7 @@
             this.txtDestino = new System.Windows.Forms.TextBox();
             this.btnBuscar = new System.Windows.Forms.Button();
             this.btnFlecha = new System.Windows.Forms.Button();
+            this.btnGenerarAmbos = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.selectedImage)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -226,11 +227,22 @@
             this.btnFlecha.Text = "→";
             this.btnFlecha.UseVisualStyleBackColor = true;
             // 
+            // btnGenerarAmbos
+            // 
+            this.btnGenerarAmbos.Location = new System.Drawing.Point(814, 400);
+            this.btnGenerarAmbos.Name = "btnGenerarAmbos";
+            this.btnGenerarAmbos.Size = new System.Drawing.Size(149, 50);
+            this.btnGenerarAmbos.TabIndex = 15;
+            this.btnGenerarAmbos.Text = "Generar Ambos";
+            this.btnGenerarAmbos.UseVisualStyleBackColor = true;
+            this.btnGenerarAmbos.Click += new System.EventHandler(this.btnGenerarAmbos_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1076, 550);
+            this.Controls.Add(this.btnGenerarAmbos);
             this.Controls.Add(this.btnFlecha);
             this.Controls.Add(this.btnBuscar);
             this.Controls.Add(this.txtDestino);
@@ -277,5 +289,6 @@
         private System.Windows.Forms.TextBox txtDestino;
         private System.Windows.Forms.Button btnBuscar;
         private System.Windows.Forms.Button btnFlecha;
+        private System.Windows.Forms.Button btnGenerarAmbos;
     }
 }
