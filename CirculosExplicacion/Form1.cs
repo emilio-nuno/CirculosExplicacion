@@ -333,11 +333,8 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             pesoKruskal = costoMin;
         }
 
-        private void DFS(int i, bool[] visitados, int buscado, Bitmap bmp)
+        private void DFS(int i, bool[] visitados, int buscado, Bitmap bmp, int caller)
         {
-            selectedImage.BackgroundImage = originalImage;
-            selectedImage.BackgroundImageLayout = ImageLayout.Zoom; //Para que encuadre
-
             if (i == buscado)
             {
                 encontradoDFS = true;
@@ -351,25 +348,14 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 if (!visitados[j] && ARM[i, j] != 0 && !encontradoDFS)
                 {
                     Console.WriteLine("Vamos del nodo {0} al nodo {1}", i, j);
-                    DibujarCirculo(centros[i].Item1, centros[i].Item2, bmp, 10, Color.Red);
-                    selectedImage.Image = bmp;
-                    selectedImage.Refresh();
-                    Thread.Sleep(250);
-
-                    DibujarCirculo(centros[j].Item1, centros[j].Item2, bmp, 10, Color.Red);
-                    selectedImage.Image = bmp;
-                    selectedImage.Refresh();
-                    Thread.Sleep(250);
-                    DFS(j, visitados, buscado, bmp);
+                    Caminar(i, j, bmp);
+                    DFS(j, visitados, buscado, bmp, i);
                 }
             }
             Console.WriteLine("Se terminó el nodo {0}", i);
-            if (!encontradoDFS)
+            if (!encontradoDFS && i != caller)
             {
-                DibujarCirculo(centros[i].Item1, centros[i].Item2, bmp, 10, Color.Red);
-                selectedImage.Image = bmp;
-                selectedImage.Refresh();
-                Thread.Sleep(500);
+                Caminar(i, caller, bmp);
             }
         }
 
@@ -381,7 +367,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             int destino = Int32.Parse(txtDestino.Text);
             using (Bitmap bmp = new Bitmap(originalImage))
             {
-                DFS(origen, visitados, destino, bmp);
+                DFS(origen, visitados, destino, bmp, origen);
             }
             if(encontradoDFS)
             {
@@ -439,6 +425,21 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
             Form2 arboles = new Form2(prim, kruskal);
             arboles.Show();
+        }
+
+        private void Caminar(int origen, int destino, Bitmap bmp)
+        {
+            int pos = 0;
+            while(pos + 10 < caminos[origen][destino].Count - 1)
+            {
+                selectedImage.BackgroundImage = originalImage;
+                selectedImage.BackgroundImageLayout = ImageLayout.Zoom; //Para que encuadre
+                DibujarCirculo(caminos[origen][destino][pos].Item1, caminos[origen][destino][pos].Item2, bmp, 10, Color.Red);
+                selectedImage.Image = bmp;
+                selectedImage.Refresh();
+                Thread.Sleep(1);
+                pos += 10;
+            }
         }
     }
 }
