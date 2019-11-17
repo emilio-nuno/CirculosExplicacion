@@ -201,6 +201,9 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                     {
                         if (!terminados.Contains(agente.Inicial))
                         {
+                            selectedImage.Image = bmp;
+                    selectedImage.Refresh();
+                    Thread.Sleep(1);
                             if (!Caminar(agente, destinos[agente.Inicial][agente.Actual], bmp))
                             {
                                 terminados.Add(agente.Inicial);
@@ -208,16 +211,13 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                             }
                         }
                     }
-                    selectedImage.Image = bmp;
-                    selectedImage.Refresh();
-                    Thread.Sleep(1);
                 }
             }
         }
 
         private void botonAnimar_Click(object sender, EventArgs e) //Actualmente el primer agente llega al señuelo seleccionado, y los demas llegan a un señuelo random
         {
-            agentes[0].Color = Color.Red;
+            //agentes[0].Color = Color.Red;
             //agentes[1].Color = Color.Green;
             //agentes[2].Color = Color.Pink;
             //agentes[3].Color = Color.Yellow;
@@ -227,6 +227,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             {
                 Dictionary<int, Dictionary<int, int>> aux = new Dictionary<int, Dictionary<int, int>>();
                 agente.Velocidad = 10;
+                agente.Color = Color.Red;
                 foreach (int id in caminos.Keys)
                 {
                     Dictionary<int, int> temp = new Dictionary<int, int>();
