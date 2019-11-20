@@ -208,11 +208,12 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void botonPrim_Click(object sender, EventArgs e)
         {
+            int raiz = Int32.Parse(Interaction.InputBox("Por favor elija nodo para que sea raíz", "Valor de Raíz", "0", -1, -1));
             double[,] matriz = ConseguirMatriz();
 
             int V = (int)Math.Sqrt(matriz.Length); //Sacamos el número de nodos que hay
             bool[] completados = new bool[V];
-            GenerarARMPrim(matriz, 5, completados, originalImage); //Si hay componentes disjuntos, crea el bosque
+            GenerarARMPrim(matriz, raiz, completados, originalImage); //Si hay componentes disjuntos, crea el bosque
             for(int i = 0; i < V; i++)
             {
                 if(completados[i] == false) //Agregamos esto para crear bosque
@@ -386,6 +387,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void btnGenerarAmbos_Click(object sender, EventArgs e)
         {
+            int raiz = Int32.Parse(Interaction.InputBox("Por favor elija nodo para que sea raíz", "Valor de Raíz", "0", -1, -1));
             Bitmap prim = new Bitmap(originalImage);
             Bitmap kruskal = new Bitmap(originalImage);
 
@@ -410,7 +412,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
             V = (int)Math.Sqrt(matrizPrim.Length); //Sacamos el número de nodos que hay
             bool[] completados = new bool[V];
-            GenerarARMPrim(matrizPrim, 8, completados, prim); //Si hay componentes disjuntos, crea el bosque
+            GenerarARMPrim(matrizPrim, raiz, completados, prim); //Si hay componentes disjuntos, crea el bosque
             for (int i = 0; i < V; i++)
             {
                 if (completados[i] == false) //Agregamos esto para crear bosque
