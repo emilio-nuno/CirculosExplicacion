@@ -12,11 +12,13 @@ namespace CirculosExplicacion
 {
     public partial class Form2 : Form
     {
-        public Form2(Bitmap prim, Bitmap kruskal)
+        public Form2(Bitmap prim, Bitmap kruskal, List<string> pasosPrim, List<string> pasosKruskal)
         {
             InitializeComponent();
             pcPrim.Image = prim;
             pcKruskal.Image = kruskal;
+            lstPrim.DataSource = pasosPrim;
+            lstKruskal.DataSource = pasosKruskal;
         }
     }
 }

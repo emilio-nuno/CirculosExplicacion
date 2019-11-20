@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.VisualBasic;
 
 namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADIOS
 {
@@ -32,6 +33,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
         private double[,] ARM;
         private bool encontradoDFS;
         private double pesoPrim, pesoKruskal;
+        private List<string> pasosPrim, pasosKruskal;
 
         public Form1()
         {
@@ -39,6 +41,8 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             InitializeComponent();
             this.sobreescribir = false;
             this.encontradoDFS = false;
+            this.pasosPrim = new List<string>();
+            this.pasosKruskal = new List<string>();
         }
 
         private void botonSelect_Click(object sender, EventArgs e)
@@ -158,7 +162,6 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             seleccionados[inicial] = true; //Seleccionamos el nodo raíz
 
             int x, y;
-            Console.WriteLine("Arista : Peso");
 
             //Un ARM siempre tendrá V-1 aristas, por el nodo raíz
             while (numeroArista < V - 1)
@@ -186,7 +189,8 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 }
                 if (x != -1 && y != -1) //Cuando x y y sean el valor inicial dado (-1), ya no se encuentran minimos en el componente
                 {
-                    Console.WriteLine("{0} - {1} :  {2}", x, y, matriz[x, y]);
+                    string aux = "{0} - {1} :  {2}";
+                    pasosPrim.Add(string.Format(aux, x, y, matriz[x, y]));
                     ARM[x, y] = matriz[x, y]; //Lo hacemos no dirigido
                     ARM[y, x] = matriz[x, y];
                     DibujarArista(x, y, image);
@@ -308,14 +312,15 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                         {
                             min = matriz[i, j];
                             a = i;
-                            b = j;
+                             b = j;
                         }
                     }
                 }
                 if(a != -1 && b != -1) //Solo calcula peso para grafos con componentes disjuntos
                 {
                     Union(a, b, padre);
-                    Console.WriteLine("Arista {0}: {1} - {2} con coste {3}", numArista++, a, b, min);
+                    string aux = "Arista {0}: {1} - {2} con coste {3}";
+                    pasosKruskal.Add(string.Format(aux, numArista++, a, b, min));
                     ARM[a, b] = min;
                     ARM[b, a] = min;
                     DibujarArista(a, b, imagen);
@@ -423,7 +428,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 graphics.DrawString("Peso: " + pesoKruskal.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), 0, 0);
             }
 
-            Form2 arboles = new Form2(prim, kruskal);
+            Form2 arboles = new Form2(prim, kruskal, pasosPrim, pasosKruskal);
             arboles.Show();
         }
 
