@@ -441,7 +441,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             {
                 selectedImage.BackgroundImage = originalImage;
                 selectedImage.BackgroundImageLayout = ImageLayout.Zoom; //Para que encuadre
-                DibujarCirculo(caminos[origen][destino][pos].Item1, caminos[origen][destino][pos].Item2, bmp, 10, Color.Red);
+                DibujarCirculo(caminos[origen][destino][pos].Item1, caminos[origen][destino][pos].Item2, bmp, 40, Color.Blue);
                 selectedImage.Image = bmp;
                 selectedImage.Refresh();
                 Thread.Sleep(1);
