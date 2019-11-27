@@ -20,7 +20,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
     public partial class Form1 : Form
     {//Usar listbox
-        private int señuelos = 3;
+        private int señuelos = 1;
         private int contador = 0;
         private Bitmap originalImage;
         private Dictionary<int, Tuple<int, int, int>> centros;
@@ -143,6 +143,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private int Buscar_Camino(Agente a, Dictionary<int, Dictionary<int, Dictionary<int, int>>> visitados)
         {
+            bool todosVisitados = true;
             if (a.Actual == señuelo.Actual)
             {
                 encontrado = true;
@@ -153,6 +154,11 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             Dictionary<int, double> prioridad = new Dictionary<int, double>();
             foreach (int id in caminos[a.Actual].Keys)
             {
+                if(visitados[a.Inicial][a.Actual][id] == 0)
+                {
+                    todosVisitados = false;
+                }
+
                 double thetaBait = Math.Atan2((señuelo.Y - caminos[a.Actual][id][0].Item2), (señuelo.X - caminos[a.Actual][id][0].Item1));
                 double thetaEdge = Math.Atan2((caminos[a.Actual][id][caminos[a.Actual][id].Count-1].Item2 - caminos[a.Actual][id][0].Item2), (caminos[a.Actual][id][caminos[a.Actual][id].Count - 1].Item1 - caminos[a.Actual][id][0].Item1));
                 if((thetaEdge > Math.PI) && (thetaBait == 0))
@@ -167,15 +173,22 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             var destino = from entry in prioridad where entry.Value == ordenado.Min() select entry.Key;
             int destinoactual = destino.FirstOrDefault();
 
-            if (visitados[a.Inicial][a.Actual][destinoactual] == 0)
-            {
-                //visitados[a.Inicial][a.Actual][destinoactual] += 1;
-                return destinoactual;
-            }
-            else
+           if(todosVisitados)
             {
                 int id = visitados[a.Inicial][a.Actual].Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
                 return id;
+            }
+            else
+            {
+                if(visitados[a.Inicial][a.Actual][destinoactual] == 0)
+                {
+                    return destinoactual;
+                }
+                else
+                {
+                    int id = visitados[a.Inicial][a.Actual].Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
+                    return id;
+                }
             }
         }
 
@@ -261,6 +274,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                             int temp = Buscar_Camino(agente, visitados);
                             destinos.Add(agente.Inicial, new Dictionary<int, int>() { { agente.Actual, temp } });
                             visitados[agente.Inicial][agente.Actual][temp] += 1; //La visita la haces dos veces
+                            visitados[agente.Inicial][temp][agente.Actual] += 1;
                         }
                     }
                     DarPaso(destinos);
