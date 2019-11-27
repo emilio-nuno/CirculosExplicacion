@@ -309,9 +309,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 {
                     for (int j = 0; j < V; j++)
                     {
-                        int return1 = Encontrar(i, padre);
-                        int return2 = Encontrar(j, padre);
-                        if (return1 != return2 && matriz[i, j] < min)
+                        if (Encontrar(i, padre) != Encontrar(j, padre) && matriz[i, j] < min)
                         {
                             min = matriz[i, j];
                             a = i;
