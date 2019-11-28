@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.VisualBasic;
 
 namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADIOS
 {
@@ -20,25 +21,28 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
     public partial class Form1 : Form
     {//Usar listbox
-        private int señuelos = 3;
-        private int contador = 0;
         private Bitmap originalImage;
         private Dictionary<int, Tuple<int, int, int>> centros;
-        private Dictionary<int, List<Dictionary<int, Tuple<int, int, int>>>> conexiones;
+        private Dictionary<int, List<Dictionary<int, VerticeConectado>>> conexiones; //Does not have to be list of dicts
         private bool sobreescribir;
         private Circle primera;
         private Grafo g;
-        private Señuelo señuelo;
         private Dictionary<int, Dictionary<int, List<Tuple<int, int>>>> caminos;
         private List<Agente> agentes;
-        private bool encontrado;
+        private Señuelo señuelo;
+        private double[,] ARM;
+        private bool encontradoDFS;
+        private double pesoPrim, pesoKruskal;
+        private List<string> pasosPrim, pasosKruskal;
 
         public Form1()
         {
-            this.encontrado = false;
             this.agentes = new List<Agente>();
             InitializeComponent();
             this.sobreescribir = false;
+            this.encontradoDFS = false;
+            this.pasosPrim = new List<string>();
+            this.pasosKruskal = new List<string>();
         }
 
         private void botonSelect_Click(object sender, EventArgs e)
@@ -63,7 +67,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             conexiones = g.conexiones;
             caminos = g.caminos;
             selectedImage.Refresh();
-            originalImage.Save("C:\\Users\\super\\Pictures\\new.png", System.Drawing.Imaging.ImageFormat.Png);
+            //originalImage.Save("C:\\Users\\super\\Pictures\\new.png", System.Drawing.Imaging.ImageFormat.Png);
 
             if (sobreescribir)
             {
@@ -73,7 +77,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             for (int i = 0; i < conexiones.Count; i++)
             {
                 nodosConectados.Nodes.Add(i.ToString());
-                foreach (Dictionary<int, Tuple<int, int, int>> lista in conexiones[i])
+                foreach (Dictionary<int, VerticeConectado> lista in conexiones[i])
                 {
                     foreach (int id in lista.Keys)
                     {
@@ -82,6 +86,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 }
             }
             sobreescribir = true;
+            ARM = ConseguirMatrizARM();
         }
 
         private void Ordenar()
@@ -121,168 +126,6 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             ((TreeView)sender).SelectedNode = e.Node;
         }
 
-        private bool Caminar(Agente agente, int destino, Bitmap bmp)
-        {
-            if(agente.Velocidad + agente.Pos < caminos[agente.Actual][destino].Count - 1)
-            {
-                selectedImage.BackgroundImage = originalImage;
-                selectedImage.BackgroundImageLayout = ImageLayout.Zoom; //Para que encuadre
-                DibujarCirculo(caminos[agente.Actual][destino][agente.Pos].Item1, caminos[agente.Actual][destino][agente.Pos].Item2, bmp, 10, agente.Color);
-                DibujarRadar(caminos[agente.Actual][destino][agente.Pos].Item1, caminos[agente.Actual][destino][agente.Pos].Item2, bmp, 10, agente.Color);
-                agente.Pos += agente.Velocidad;
-                return true;
-            }
-            else
-            {
-                DibujarCirculo(caminos[agente.Actual][destino][caminos[agente.Actual][destino].Count-1].Item1, caminos[agente.Actual][destino][caminos[agente.Actual][destino].Count - 1].Item2, bmp, 10, agente.Color);
-                DibujarRadar(caminos[agente.Actual][destino][agente.Pos].Item1, caminos[agente.Actual][destino][agente.Pos].Item2, bmp, 10, agente.Color);
-                agente.Pos = 0;
-                return false;
-            }
-        }
-
-        private int Buscar_Camino(Agente a, Dictionary<int, Dictionary<int, Dictionary<int, int>>> visitados)
-        {
-            if (a.Actual == señuelo.Actual)
-            {
-                encontrado = true;
-                SeñueloAleatorio();
-                a.Velocidad += 10;
-            }
-
-            Dictionary<int, double> prioridad = new Dictionary<int, double>();
-            foreach (int id in caminos[a.Actual].Keys)
-            {
-                double thetaBait = Math.Atan2((señuelo.Y - caminos[a.Actual][id][0].Item2), (señuelo.X - caminos[a.Actual][id][0].Item1));
-                double thetaEdge = Math.Atan2((caminos[a.Actual][id][caminos[a.Actual][id].Count-1].Item2 - caminos[a.Actual][id][0].Item2), (caminos[a.Actual][id][caminos[a.Actual][id].Count - 1].Item1 - caminos[a.Actual][id][0].Item1));
-                if((thetaEdge > Math.PI) && (thetaBait == 0))
-                {
-                    thetaBait = (2 * Math.PI);
-                }
-                double tempdiff = Math.Abs(thetaBait - thetaEdge);
-                prioridad.Add(id, tempdiff);
-            }
-
-            List<double> ordenado = prioridad.Values.ToList();
-            var destino = from entry in prioridad where entry.Value == ordenado.Min() select entry.Key;
-            int destinoactual = destino.FirstOrDefault();
-
-            if (visitados[a.Inicial][a.Actual][destinoactual] == 0)
-            {
-                //visitados[a.Inicial][a.Actual][destinoactual] += 1;
-                return destinoactual;
-            }
-            else
-            {
-                int id = visitados[a.Inicial][a.Actual].Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
-                return id;
-            }
-        }
-
-        private void SeñueloAleatorio()
-        {
-            Random aleatorio = new Random();
-            int index = aleatorio.Next(centros.Count);
-            señuelo.Actual = index;
-            //Next two lines probably useless
-            señuelo.X = centros[index].Item1;
-            señuelo.Y = centros[index].Item2;
-        }
-
-        private void DarPaso(Dictionary<int, Dictionary<int, int>> destinos) //a.Actual y destino
-        {
-            List<int> terminados = new List<int>();
-            int contadorTerminado = 0;
-            using (Bitmap bmp = new Bitmap(originalImage))
-            {
-                while (contadorTerminado < agentes.Count)
-                {
-                    foreach (Agente agente in agentes)
-                    {
-                        if (!terminados.Contains(agente.Inicial))
-                        {
-                            selectedImage.Image = bmp;
-                    selectedImage.Refresh();
-                    Thread.Sleep(1);
-                            if (!Caminar(agente, destinos[agente.Inicial][agente.Actual], bmp))
-                            {
-                                terminados.Add(agente.Inicial);
-                                contadorTerminado++;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private void botonAnimar_Click(object sender, EventArgs e) //Actualmente el primer agente llega al señuelo seleccionado, y los demas llegan a un señuelo random
-        {
-            //agentes[0].Color = Color.Red;
-            //agentes[1].Color = Color.Green;
-            //agentes[2].Color = Color.Pink;
-            //agentes[3].Color = Color.Yellow;
-
-            Dictionary<int, Dictionary<int, Dictionary<int, int>>> visitados = new Dictionary<int, Dictionary<int, Dictionary<int, int>>>();
-            foreach (Agente agente in agentes)
-            {
-                Dictionary<int, Dictionary<int, int>> aux = new Dictionary<int, Dictionary<int, int>>();
-                agente.Velocidad = 10;
-                agente.Color = Color.Red;
-                foreach (int id in caminos.Keys)
-                {
-                    Dictionary<int, int> temp = new Dictionary<int, int>();
-                    foreach (int conectado in caminos[id].Keys)
-                    {
-                        temp.Add(conectado, 0);
-                    }
-                    aux.Add(id, temp);
-                }
-                visitados.Add(agente.Inicial, aux);
-            }
-
-            while (contador < señuelos)
-            {
-                encontrado = false;
-                Dictionary<int, Dictionary<int, int>> destinos = new Dictionary<int, Dictionary<int, int>>();
-                while (!encontrado)
-                {
-                    foreach (Agente agente in agentes)
-                    {
-                        if (Existe_Camino(agente.Actual, señuelo.Actual))
-                        {
-                            //Agregar velocidad a agente actual, solo aumentamos velocidad en el metodo de buscar
-                            destinos.Add(agente.Inicial, new Dictionary<int, int>() { { agente.Actual, señuelo.Actual } });
-                            SeñueloAleatorio();
-                            encontrado = true;
-                            agente.Velocidad += 10;
-                        }
-                        else
-                        {
-                            int temp = Buscar_Camino(agente, visitados);
-                            destinos.Add(agente.Inicial, new Dictionary<int, int>() { { agente.Actual, temp } });
-                            visitados[agente.Inicial][agente.Actual][temp] += 1; //La visita la haces dos veces
-                        }
-                    }
-                    DarPaso(destinos);
-                    foreach(Agente agente in agentes)
-                    {
-                        foreach (int id in destinos.Keys)
-                        {
-                            foreach (int actual in destinos[id].Keys)
-                            {
-                                if(agente.Inicial == id)
-                                {
-                                    agente.Actual = destinos[agente.Inicial][agente.Actual];
-                                }
-                        }
-                        }
-                    }
-                    destinos.Clear();
-                }
-                contador++;
-            }
-        }
-
         private void origenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             agentes.Add(new Agente(centros[Int32.Parse(nodosConectados.SelectedNode.Text)].Item1, centros[Int32.Parse(nodosConectados.SelectedNode.Text)].Item2, 50, Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), Color.Transparent)); //Agregar color manual
@@ -302,34 +145,310 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
-        private void DibujarSeñuelo(int x, int y, Bitmap bmp, int radio, Color color)
+        private void DibujarArista(int idOrigen, int idDestino, Bitmap imagen)
         {
-            using (var graphics = Graphics.FromImage(bmp))
+            using (var graphics = Graphics.FromImage(imagen))
             {
-                graphics.FillEllipse(new SolidBrush(color), x - (radio / 2), y - (radio / 2), radio, radio);
+                graphics.DrawLine(new Pen(Color.Red, 5), centros[idOrigen].Item1, centros[idOrigen].Item2, centros[idDestino].Item1, centros[idDestino].Item2);
             }
         }
 
-        private void DibujarRadar(int x, int y, Bitmap bmp, int largo, Color color)
+        private void GenerarARMPrim(double[,] matriz, int inicial, bool[] seleccionados, Bitmap image)
         {
-            using (var graphics = Graphics.FromImage(bmp))
+            int V = (int)Math.Sqrt(matriz.Length);
+            int numeroArista;
+            numeroArista = 0; //Contador arista
+
+            seleccionados[inicial] = true; //Seleccionamos el nodo raíz
+
+            int x, y;
+
+            //Un ARM siempre tendrá V-1 aristas, por el nodo raíz
+            while (numeroArista < V - 1)
             {
-                Pen p = new Pen(color, largo);
-                p.StartCap = System.Drawing.Drawing2D.LineCap.Round;
-                p.EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
+                double min = double.MaxValue;
+                x = y = -1;
 
-                double theta = Math.Atan2(señuelo.Y - y, señuelo.X - x);
-                int flechax = (int)Math.Round(40 * Math.Cos(theta) + x);
-                int flechay = (int)Math.Round(40 * Math.Sin(theta) + y);
-
-                graphics.Clear(Color.Transparent);
-                graphics.DrawLine(p, x, y, flechax, flechay);
+                for (int i = 0; i < V; i++)
+                {
+                    if (seleccionados[i])
+                    {
+                        for (int j = 0; j < V; j++)
+                        {
+                            if (!seleccionados[j] && matriz[i, j] != 0)
+                            {
+                                if (min > matriz[i, j])
+                                {
+                                    min = matriz[i, j];
+                                    x = i;
+                                    y = j;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (x != -1 && y != -1) //Cuando x y y sean el valor inicial dado (-1), ya no se encuentran minimos en el componente
+                {
+                    string aux = "{0} - {1} :  {2}";
+                    pasosPrim.Add(string.Format(aux, x, y, matriz[x, y]));
+                    ARM[x, y] = matriz[x, y]; //Lo hacemos no dirigido
+                    ARM[y, x] = matriz[x, y];
+                    DibujarArista(x, y, image);
+                    selectedImage.Refresh();
+                    seleccionados[y] = true;
+                    numeroArista++;
+                    pesoPrim += matriz[x, y];
+                }
+                else
+                {
+                    return;
+                }
             }
         }
 
-        private bool Existe_Camino(int origen, int destino) //Se trabaja con IDs de vértice
+        private void botonPrim_Click(object sender, EventArgs e)
         {
-            return caminos[origen].ContainsKey(destino) ? true : false;
+            int raiz = Int32.Parse(Interaction.InputBox("Por favor elija nodo para que sea raíz", "Valor de Raíz", "0", -1, -1));
+            double[,] matriz = ConseguirMatriz();
+
+            int V = (int)Math.Sqrt(matriz.Length); //Sacamos el número de nodos que hay
+            bool[] completados = new bool[V];
+            GenerarARMPrim(matriz, raiz, completados, originalImage); //Si hay componentes disjuntos, crea el bosque
+            for (int i = 0; i < V; i++)
+            {
+                if (completados[i] == false) //Agregamos esto para crear bosque
+                {
+                    GenerarARMPrim(matriz, i, completados, originalImage);
+                }
+            }
+        }
+
+        private double[,] ConseguirMatriz()
+        {
+            double[,] matriz = new double[conexiones.Count, conexiones.Count];
+            foreach (int id in conexiones.Keys)
+            {
+                foreach (Dictionary<int, VerticeConectado> conexion in conexiones[id])
+                {
+                    foreach (int idConectado in conexion.Keys)
+                    {
+                        matriz[id, idConectado] = conexion[idConectado].distanciaEuclideana;
+                    }
+                }
+            }
+            return matriz;
+        }
+
+        private double[,] ConseguirMatrizARM()
+        {
+            double[,] matriz = new double[conexiones.Count, conexiones.Count];
+            foreach (int id in conexiones.Keys)
+            {
+                foreach (Dictionary<int, VerticeConectado> conexion in conexiones[id])
+                {
+                    foreach (int idConectado in conexion.Keys)
+                    {
+                        matriz[id, idConectado] = 0;
+                    }
+                }
+            }
+            return matriz;
+        }
+
+        private void botonKruskal_Click(object sender, EventArgs e)
+        {
+            double[,] matriz = ConseguirMatriz();
+
+            int V = (int)Math.Sqrt(matriz.Length);
+            int[] padre = new int[V];
+
+            for (int i = 0; i < V; i++) //Convertimos matriz a apropiada para Kruskal
+            {
+                for (int j = 0; j < V; j++)
+                {
+                    if (matriz[i, j] == 0)
+                    {
+                        matriz[i, j] = double.MaxValue;
+                    }
+                }
+            }
+            GenerarARMKruskal(padre, matriz, originalImage);
+        }
+
+        private int Encontrar(int i, int[] padre)
+        {
+            while (padre[i] != i)
+            {
+                i = padre[i];
+            }
+            return i;
+        }
+
+        private void Union(int i, int j, int[] padre)
+        {
+            int a = Encontrar(i, padre);
+            int b = Encontrar(j, padre);
+            padre[a] = b;
+        }
+
+        private void GenerarARMKruskal(int[] padre, double[,] matriz, Bitmap imagen)
+        {
+            int V = (int)Math.Sqrt(matriz.Length);
+
+            double costoMin = 0;
+            for (int i = 0; i < V; i++)
+                padre[i] = i;
+
+            int numArista = 0;
+            while (numArista < V - 1)
+            {
+                double min = double.MaxValue;
+                int a = -1, b = -1;
+
+                for (int i = 0; i < V; i++)
+                {
+                    for (int j = 0; j < V; j++)
+                    {
+                        int return1 = Encontrar(i, padre);
+                        int return2 = Encontrar(j, padre);
+                        if (return1 != return2 && matriz[i, j] < min)
+                        {
+                            min = matriz[i, j];
+                            a = i;
+                            b = j;
+                        }
+                    }
+                }
+                if (a != -1 && b != -1) //Solo calcula peso para grafos con componentes disjuntos
+                {
+                    Union(a, b, padre);
+                    string aux = "Arista {0}: {1} - {2} con coste {3}";
+                    pasosKruskal.Add(string.Format(aux, numArista++, a, b, min));
+                    ARM[a, b] = min;
+                    ARM[b, a] = min;
+                    DibujarArista(a, b, imagen);
+                    selectedImage.Refresh();
+                    costoMin += min;
+                }
+                else
+                {
+                    Console.WriteLine("Costo Minimo: {0}", costoMin); //Costo del ARM
+                    pesoKruskal = costoMin;
+                    return;
+                }
+            }
+            Console.WriteLine("Costo Minimo: {0}", costoMin); //Costo del ARM
+            pesoKruskal = costoMin;
+        }
+
+        private void DFS(int i, bool[] visitados, int buscado, Bitmap bmp, int caller)
+        {
+            if (i == buscado)
+            {
+                encontradoDFS = true;
+            }
+
+            int V = (int)Math.Sqrt(ARM.Length);
+            int j;
+            visitados[i] = true;
+            for (j = 0; j < V; j++)
+            {
+                if (!visitados[j] && ARM[i, j] != 0 && !encontradoDFS)
+                {
+                    Console.WriteLine("Vamos del nodo {0} al nodo {1}", i, j);
+                    Caminar(i, j, bmp);
+                    DFS(j, visitados, buscado, bmp, i);
+                }
+            }
+            Console.WriteLine("Se terminó el nodo {0}", i);
+            if (!encontradoDFS && i != caller)
+            {
+                Caminar(i, caller, bmp);
+            }
+        }
+
+        private void btnBuscar_Click(object sender, EventArgs e)
+        {
+            int V = (int)Math.Sqrt(ARM.Length);
+            bool[] visitados = new bool[V];
+            int origen = Int32.Parse(txtOrigen.Text);
+            int destino = Int32.Parse(txtDestino.Text);
+            using (Bitmap bmp = new Bitmap(originalImage))
+            {
+                DFS(origen, visitados, destino, bmp, origen);
+            }
+            if (encontradoDFS)
+            {
+                Console.WriteLine("Se encuentra");
+            }
+            else
+            {
+                Console.WriteLine("No se encuentra");
+            }
+        }
+
+        private void btnGenerarAmbos_Click(object sender, EventArgs e)
+        {
+            int raiz = Int32.Parse(Interaction.InputBox("Por favor elija nodo para que sea raíz", "Valor de Raíz", "0", -1, -1));
+            Bitmap prim = new Bitmap(originalImage);
+            Bitmap kruskal = new Bitmap(originalImage);
+
+            double[,] matrizKruskal = ConseguirMatriz();
+
+            int V = (int)Math.Sqrt(matrizKruskal.Length);
+            int[] padre = new int[V];
+
+            for (int i = 0; i < V; i++) //Convertimos matriz a apropiada para Kruskal
+            {
+                for (int j = 0; j < V; j++)
+                {
+                    if (matrizKruskal[i, j] == 0)
+                    {
+                        matrizKruskal[i, j] = double.MaxValue;
+                    }
+                }
+            }
+            GenerarARMKruskal(padre, matrizKruskal, kruskal);
+
+            double[,] matrizPrim = ConseguirMatriz();
+
+            V = (int)Math.Sqrt(matrizPrim.Length); //Sacamos el número de nodos que hay
+            bool[] completados = new bool[V];
+            GenerarARMPrim(matrizPrim, raiz, completados, prim); //Si hay componentes disjuntos, crea el bosque
+            for (int i = 0; i < V; i++)
+            {
+                if (completados[i] == false) //Agregamos esto para crear bosque
+                {
+                    GenerarARMPrim(matrizPrim, i, completados, prim);
+                }
+            }
+
+            using (var graphics = Graphics.FromImage(prim))
+            {
+                graphics.DrawString("Peso: " + pesoPrim.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), 0, 0);
+            }
+            using (var graphics = Graphics.FromImage(kruskal))
+            {
+                graphics.DrawString("Peso: " + pesoKruskal.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), 0, 0);
+            }
+
+            Form2 arboles = new Form2(prim, kruskal, pasosPrim, pasosKruskal);
+            arboles.Show();
+        }
+
+        private void Caminar(int origen, int destino, Bitmap bmp)
+        {
+            int pos = 0;
+            while (pos + 10 < caminos[origen][destino].Count - 1)
+            {
+                selectedImage.BackgroundImage = originalImage;
+                selectedImage.BackgroundImageLayout = ImageLayout.Zoom; //Para que encuadre
+                DibujarCirculo(caminos[origen][destino][pos].Item1, caminos[origen][destino][pos].Item2, bmp, 10, Color.Red);
+                selectedImage.Image = bmp;
+                selectedImage.Refresh();
+                Thread.Sleep(1);
+                pos += 10;
+            }
         }
     }
 }

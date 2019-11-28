@@ -42,17 +42,23 @@
             this.botonOrdenar = new System.Windows.Forms.Button();
             this.listaAntes = new System.Windows.Forms.ListBox();
             this.listaDespues = new System.Windows.Forms.ListBox();
-            this.botonAnimar = new System.Windows.Forms.Button();
+            this.botonPrim = new System.Windows.Forms.Button();
+            this.botonKruskal = new System.Windows.Forms.Button();
+            this.txtOrigen = new System.Windows.Forms.TextBox();
+            this.txtDestino = new System.Windows.Forms.TextBox();
+            this.btnBuscar = new System.Windows.Forms.Button();
+            this.btnFlecha = new System.Windows.Forms.Button();
+            this.btnGenerarAmbos = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.selectedImage)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // selectedImage
             // 
-            this.selectedImage.Location = new System.Drawing.Point(9, 9);
-            this.selectedImage.Margin = new System.Windows.Forms.Padding(2);
+            this.selectedImage.Location = new System.Drawing.Point(12, 11);
+            this.selectedImage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.selectedImage.Name = "selectedImage";
-            this.selectedImage.Size = new System.Drawing.Size(490, 395);
+            this.selectedImage.Size = new System.Drawing.Size(653, 486);
             this.selectedImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.selectedImage.TabIndex = 0;
             this.selectedImage.TabStop = false;
@@ -63,10 +69,10 @@
             // 
             // botonSelect
             // 
-            this.botonSelect.Location = new System.Drawing.Point(529, 9);
-            this.botonSelect.Margin = new System.Windows.Forms.Padding(2);
+            this.botonSelect.Location = new System.Drawing.Point(705, 11);
+            this.botonSelect.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.botonSelect.Name = "botonSelect";
-            this.botonSelect.Size = new System.Drawing.Size(112, 41);
+            this.botonSelect.Size = new System.Drawing.Size(149, 50);
             this.botonSelect.TabIndex = 1;
             this.botonSelect.Text = "Seleccionar Imagen";
             this.botonSelect.UseVisualStyleBackColor = true;
@@ -74,10 +80,10 @@
             // 
             // botonFindCenter
             // 
-            this.botonFindCenter.Location = new System.Drawing.Point(529, 53);
-            this.botonFindCenter.Margin = new System.Windows.Forms.Padding(2);
+            this.botonFindCenter.Location = new System.Drawing.Point(705, 65);
+            this.botonFindCenter.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.botonFindCenter.Name = "botonFindCenter";
-            this.botonFindCenter.Size = new System.Drawing.Size(112, 41);
+            this.botonFindCenter.Size = new System.Drawing.Size(149, 50);
             this.botonFindCenter.TabIndex = 2;
             this.botonFindCenter.Text = "Encontrar Centros";
             this.botonFindCenter.UseVisualStyleBackColor = true;
@@ -86,50 +92,52 @@
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(660, 25);
-            this.listBox1.Margin = new System.Windows.Forms.Padding(2);
+            this.listBox1.ItemHeight = 16;
+            this.listBox1.Location = new System.Drawing.Point(880, 31);
+            this.listBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(113, 69);
+            this.listBox1.Size = new System.Drawing.Size(149, 84);
             this.listBox1.TabIndex = 3;
             // 
             // nodosConectados
             // 
             this.nodosConectados.ContextMenuStrip = this.contextMenuStrip1;
-            this.nodosConectados.Location = new System.Drawing.Point(660, 98);
-            this.nodosConectados.Margin = new System.Windows.Forms.Padding(2);
+            this.nodosConectados.Location = new System.Drawing.Point(880, 121);
+            this.nodosConectados.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.nodosConectados.Name = "nodosConectados";
-            this.nodosConectados.Size = new System.Drawing.Size(113, 80);
+            this.nodosConectados.Size = new System.Drawing.Size(149, 98);
             this.nodosConectados.TabIndex = 4;
             this.nodosConectados.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.nodosConectados_NodeMouseClick);
             // 
             // contextMenuStrip1
             // 
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.origenToolStripMenuItem,
             this.destinoToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(130, 52);
             // 
             // origenToolStripMenuItem
             // 
             this.origenToolStripMenuItem.Name = "origenToolStripMenuItem";
-            this.origenToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.origenToolStripMenuItem.Size = new System.Drawing.Size(129, 24);
             this.origenToolStripMenuItem.Text = "Origen";
             this.origenToolStripMenuItem.Click += new System.EventHandler(this.origenToolStripMenuItem_Click);
             // 
             // destinoToolStripMenuItem
             // 
             this.destinoToolStripMenuItem.Name = "destinoToolStripMenuItem";
-            this.destinoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.destinoToolStripMenuItem.Size = new System.Drawing.Size(129, 24);
             this.destinoToolStripMenuItem.Text = "Destino";
             this.destinoToolStripMenuItem.Click += new System.EventHandler(this.destinoToolStripMenuItem_Click);
             // 
             // botonConectar
             // 
-            this.botonConectar.Location = new System.Drawing.Point(529, 98);
-            this.botonConectar.Margin = new System.Windows.Forms.Padding(2);
+            this.botonConectar.Location = new System.Drawing.Point(705, 121);
+            this.botonConectar.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.botonConectar.Name = "botonConectar";
-            this.botonConectar.Size = new System.Drawing.Size(112, 41);
+            this.botonConectar.Size = new System.Drawing.Size(149, 50);
             this.botonConectar.TabIndex = 5;
             this.botonConectar.Text = "Conectar";
             this.botonConectar.UseVisualStyleBackColor = true;
@@ -137,10 +145,10 @@
             // 
             // botonOrdenar
             // 
-            this.botonOrdenar.Location = new System.Drawing.Point(529, 144);
-            this.botonOrdenar.Margin = new System.Windows.Forms.Padding(2);
+            this.botonOrdenar.Location = new System.Drawing.Point(705, 177);
+            this.botonOrdenar.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.botonOrdenar.Name = "botonOrdenar";
-            this.botonOrdenar.Size = new System.Drawing.Size(112, 41);
+            this.botonOrdenar.Size = new System.Drawing.Size(149, 50);
             this.botonOrdenar.TabIndex = 6;
             this.botonOrdenar.Text = "Ordenar Vértices";
             this.botonOrdenar.UseVisualStyleBackColor = true;
@@ -149,37 +157,98 @@
             // listaAntes
             // 
             this.listaAntes.FormattingEnabled = true;
-            this.listaAntes.Location = new System.Drawing.Point(528, 270);
-            this.listaAntes.Margin = new System.Windows.Forms.Padding(2);
+            this.listaAntes.ItemHeight = 16;
+            this.listaAntes.Location = new System.Drawing.Point(705, 455);
+            this.listaAntes.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listaAntes.Name = "listaAntes";
-            this.listaAntes.Size = new System.Drawing.Size(113, 69);
+            this.listaAntes.Size = new System.Drawing.Size(149, 84);
             this.listaAntes.TabIndex = 7;
             // 
             // listaDespues
             // 
             this.listaDespues.FormattingEnabled = true;
-            this.listaDespues.Location = new System.Drawing.Point(659, 270);
-            this.listaDespues.Margin = new System.Windows.Forms.Padding(2);
+            this.listaDespues.ItemHeight = 16;
+            this.listaDespues.Location = new System.Drawing.Point(880, 455);
+            this.listaDespues.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listaDespues.Name = "listaDespues";
-            this.listaDespues.Size = new System.Drawing.Size(113, 69);
+            this.listaDespues.Size = new System.Drawing.Size(149, 84);
             this.listaDespues.TabIndex = 8;
             // 
-            // botonAnimar
+            // botonPrim
             // 
-            this.botonAnimar.Location = new System.Drawing.Point(528, 190);
-            this.botonAnimar.Name = "botonAnimar";
-            this.botonAnimar.Size = new System.Drawing.Size(113, 41);
-            this.botonAnimar.TabIndex = 9;
-            this.botonAnimar.Text = "Animar";
-            this.botonAnimar.UseVisualStyleBackColor = true;
-            this.botonAnimar.Click += new System.EventHandler(this.botonAnimar_Click);
+            this.botonPrim.Location = new System.Drawing.Point(705, 232);
+            this.botonPrim.Name = "botonPrim";
+            this.botonPrim.Size = new System.Drawing.Size(149, 50);
+            this.botonPrim.TabIndex = 9;
+            this.botonPrim.Text = "Prim";
+            this.botonPrim.UseVisualStyleBackColor = true;
+            this.botonPrim.Click += new System.EventHandler(this.botonPrim_Click);
+            // 
+            // botonKruskal
+            // 
+            this.botonKruskal.Location = new System.Drawing.Point(879, 232);
+            this.botonKruskal.Name = "botonKruskal";
+            this.botonKruskal.Size = new System.Drawing.Size(149, 50);
+            this.botonKruskal.TabIndex = 10;
+            this.botonKruskal.Text = "Kruskal";
+            this.botonKruskal.UseVisualStyleBackColor = true;
+            this.botonKruskal.Click += new System.EventHandler(this.botonKruskal_Click);
+            // 
+            // txtOrigen
+            // 
+            this.txtOrigen.Location = new System.Drawing.Point(719, 315);
+            this.txtOrigen.Name = "txtOrigen";
+            this.txtOrigen.Size = new System.Drawing.Size(100, 22);
+            this.txtOrigen.TabIndex = 11;
+            // 
+            // txtDestino
+            // 
+            this.txtDestino.Location = new System.Drawing.Point(964, 315);
+            this.txtDestino.Name = "txtDestino";
+            this.txtDestino.Size = new System.Drawing.Size(100, 22);
+            this.txtDestino.TabIndex = 12;
+            // 
+            // btnBuscar
+            // 
+            this.btnBuscar.Location = new System.Drawing.Point(814, 343);
+            this.btnBuscar.Name = "btnBuscar";
+            this.btnBuscar.Size = new System.Drawing.Size(149, 50);
+            this.btnBuscar.TabIndex = 13;
+            this.btnBuscar.Text = "Buscar";
+            this.btnBuscar.UseVisualStyleBackColor = true;
+            this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
+            // 
+            // btnFlecha
+            // 
+            this.btnFlecha.Location = new System.Drawing.Point(879, 314);
+            this.btnFlecha.Name = "btnFlecha";
+            this.btnFlecha.Size = new System.Drawing.Size(29, 23);
+            this.btnFlecha.TabIndex = 14;
+            this.btnFlecha.Text = "→";
+            this.btnFlecha.UseVisualStyleBackColor = true;
+            // 
+            // btnGenerarAmbos
+            // 
+            this.btnGenerarAmbos.Location = new System.Drawing.Point(814, 400);
+            this.btnGenerarAmbos.Name = "btnGenerarAmbos";
+            this.btnGenerarAmbos.Size = new System.Drawing.Size(149, 50);
+            this.btnGenerarAmbos.TabIndex = 15;
+            this.btnGenerarAmbos.Text = "Generar Ambos";
+            this.btnGenerarAmbos.UseVisualStyleBackColor = true;
+            this.btnGenerarAmbos.Click += new System.EventHandler(this.btnGenerarAmbos_Click);
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(807, 447);
-            this.Controls.Add(this.botonAnimar);
+            this.ClientSize = new System.Drawing.Size(1076, 550);
+            this.Controls.Add(this.btnGenerarAmbos);
+            this.Controls.Add(this.btnFlecha);
+            this.Controls.Add(this.btnBuscar);
+            this.Controls.Add(this.txtDestino);
+            this.Controls.Add(this.txtOrigen);
+            this.Controls.Add(this.botonKruskal);
+            this.Controls.Add(this.botonPrim);
             this.Controls.Add(this.listaDespues);
             this.Controls.Add(this.listaAntes);
             this.Controls.Add(this.botonOrdenar);
@@ -189,12 +258,13 @@
             this.Controls.Add(this.botonFindCenter);
             this.Controls.Add(this.botonSelect);
             this.Controls.Add(this.selectedImage);
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.selectedImage)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -213,6 +283,12 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem origenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem destinoToolStripMenuItem;
-        private System.Windows.Forms.Button botonAnimar;
+        private System.Windows.Forms.Button botonPrim;
+        private System.Windows.Forms.Button botonKruskal;
+        private System.Windows.Forms.TextBox txtOrigen;
+        private System.Windows.Forms.TextBox txtDestino;
+        private System.Windows.Forms.Button btnBuscar;
+        private System.Windows.Forms.Button btnFlecha;
+        private System.Windows.Forms.Button btnGenerarAmbos;
     }
 }
