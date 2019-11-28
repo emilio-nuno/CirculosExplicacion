@@ -68,6 +68,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             caminos = g.caminos;
             selectedImage.Refresh();
             //originalImage.Save("C:\\Users\\super\\Pictures\\new.png", System.Drawing.Imaging.ImageFormat.Png);
+            se
 
             if (sobreescribir)
             {
