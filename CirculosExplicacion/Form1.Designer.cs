@@ -88,7 +88,7 @@
             // 
             this.listBox1.FormattingEnabled = true;
             this.listBox1.ItemHeight = 16;
-            this.listBox1.Location = new System.Drawing.Point(880, 31);
+            this.listBox1.Location = new System.Drawing.Point(879, 11);
             this.listBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(149, 84);
@@ -97,7 +97,7 @@
             // nodosConectados
             // 
             this.nodosConectados.ContextMenuStrip = this.contextMenuStrip1;
-            this.nodosConectados.Location = new System.Drawing.Point(880, 121);
+            this.nodosConectados.Location = new System.Drawing.Point(879, 101);
             this.nodosConectados.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.nodosConectados.Name = "nodosConectados";
             this.nodosConectados.Size = new System.Drawing.Size(149, 98);
@@ -173,7 +173,7 @@
             // 
             // btnDijkstra
             // 
-            this.btnDijkstra.Location = new System.Drawing.Point(705, 176);
+            this.btnDijkstra.Location = new System.Drawing.Point(814, 243);
             this.btnDijkstra.Name = "btnDijkstra";
             this.btnDijkstra.Size = new System.Drawing.Size(149, 50);
             this.btnDijkstra.TabIndex = 15;

@@ -146,9 +146,61 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             return matriz;
         }
 
+        private int distanciaMinima(double[,] matriz, double[] distancias, bool[] visitados)
+        {
+            int V = (int)Math.Sqrt(matriz.Length);
+            double min = double.MaxValue;
+            int idxMin = 0; //Inicializamos
+
+            for (int v = 0; v < V; v++)
+            {
+                if(!visitados[v] && distancias[v] <= min)
+                {
+                    min = distancias[v];
+                    idxMin = v;
+                }
+            }
+            return idxMin;
+        }
+
         private void btnDijkstra_Click(object sender, EventArgs e)
         {
+            int origen = Int32.Parse(Interaction.InputBox("Por favor elija el origen", "Vértce Origen", "0", -1, -1));
+            double[,] matriz =  new double[9, 9]{ { 0, 4, 0, 0, 0, 0, 0, 8, 0 }, 
+                        { 4, 0, 8, 0, 0, 0, 0, 11, 0 }, 
+                        { 0, 8, 0, 7, 0, 4, 0, 0, 2 }, 
+                        { 0, 0, 7, 0, 9, 14, 0, 0, 0 }, 
+                        { 0, 0, 0, 9, 0, 10, 0, 0, 0 }, 
+                        { 0, 0, 4, 14, 10, 0, 2, 0, 0 }, 
+                        { 0, 0, 0, 0, 0, 2, 0, 1, 6 }, 
+                        { 8, 11, 0, 0, 0, 0, 1, 0, 7 }, 
+                        { 0, 0, 2, 0, 0, 0, 6, 7, 0 } };
 
+            int V = (int)Math.Sqrt(matriz.Length); //Como construir ARM
+            double[] distancias = new double[V];
+            bool[] visitados = new bool[V]; //Bool se inicializa en falso
+
+            for (int v = 0; v < V; v++)
+            {
+                distancias[v] = double.MaxValue;
+            }
+
+            distancias[origen] = 0;
+
+            for (int contador = 0; contador < V - 1; contador++)
+            {
+                int u = distanciaMinima(matriz, distancias, visitados);
+                visitados[u] = true;
+                for (int v = 0; v < V; v++)
+                {
+                    if(!visitados[v] && matriz[u, v] != 0 && distancias[u] != double.MaxValue && distancias[u] + matriz[u, v] < distancias[v])
+                    {
+                        distancias[v] = distancias[u] + matriz[u, v];
+                    } 
+                }
+            }
+
+            Console.WriteLine("Terminado");
         }
 
         private void btnBuscar_Click(object sender, EventArgs e)
