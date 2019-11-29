@@ -173,6 +173,15 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             var destino = from entry in prioridad where entry.Value == ordenado.Min() select entry.Key;
             int destinoactual = destino.FirstOrDefault();
 
+            var iguales = visitados[a.Inicial][a.Actual].GroupBy(x => x.Value).Where(x => x.Count() > 1);
+            using(var secuencia = iguales.GetEnumerator())
+            {
+                while (secuencia.MoveNext())
+                {
+                    Console.WriteLine(secuencia.Current);
+                }
+            }
+
            if(todosVisitados)
             {
                 int id = visitados[a.Inicial][a.Actual].Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
