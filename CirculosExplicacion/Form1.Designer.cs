@@ -39,16 +39,11 @@
             this.origenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.destinoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.botonConectar = new System.Windows.Forms.Button();
-            this.botonOrdenar = new System.Windows.Forms.Button();
-            this.listaAntes = new System.Windows.Forms.ListBox();
-            this.listaDespues = new System.Windows.Forms.ListBox();
-            this.botonPrim = new System.Windows.Forms.Button();
-            this.botonKruskal = new System.Windows.Forms.Button();
             this.txtOrigen = new System.Windows.Forms.TextBox();
             this.txtDestino = new System.Windows.Forms.TextBox();
             this.btnBuscar = new System.Windows.Forms.Button();
             this.btnFlecha = new System.Windows.Forms.Button();
-            this.btnGenerarAmbos = new System.Windows.Forms.Button();
+            this.btnDijkstra = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.selectedImage)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -143,57 +138,6 @@
             this.botonConectar.UseVisualStyleBackColor = true;
             this.botonConectar.Click += new System.EventHandler(this.botonConectar_Click);
             // 
-            // botonOrdenar
-            // 
-            this.botonOrdenar.Location = new System.Drawing.Point(705, 177);
-            this.botonOrdenar.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.botonOrdenar.Name = "botonOrdenar";
-            this.botonOrdenar.Size = new System.Drawing.Size(149, 50);
-            this.botonOrdenar.TabIndex = 6;
-            this.botonOrdenar.Text = "Ordenar Vértices";
-            this.botonOrdenar.UseVisualStyleBackColor = true;
-            this.botonOrdenar.Click += new System.EventHandler(this.botonOrdenar_Click);
-            // 
-            // listaAntes
-            // 
-            this.listaAntes.FormattingEnabled = true;
-            this.listaAntes.ItemHeight = 16;
-            this.listaAntes.Location = new System.Drawing.Point(705, 455);
-            this.listaAntes.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.listaAntes.Name = "listaAntes";
-            this.listaAntes.Size = new System.Drawing.Size(149, 84);
-            this.listaAntes.TabIndex = 7;
-            // 
-            // listaDespues
-            // 
-            this.listaDespues.FormattingEnabled = true;
-            this.listaDespues.ItemHeight = 16;
-            this.listaDespues.Location = new System.Drawing.Point(880, 455);
-            this.listaDespues.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.listaDespues.Name = "listaDespues";
-            this.listaDespues.Size = new System.Drawing.Size(149, 84);
-            this.listaDespues.TabIndex = 8;
-            // 
-            // botonPrim
-            // 
-            this.botonPrim.Location = new System.Drawing.Point(705, 232);
-            this.botonPrim.Name = "botonPrim";
-            this.botonPrim.Size = new System.Drawing.Size(149, 50);
-            this.botonPrim.TabIndex = 9;
-            this.botonPrim.Text = "Prim";
-            this.botonPrim.UseVisualStyleBackColor = true;
-            this.botonPrim.Click += new System.EventHandler(this.botonPrim_Click);
-            // 
-            // botonKruskal
-            // 
-            this.botonKruskal.Location = new System.Drawing.Point(879, 232);
-            this.botonKruskal.Name = "botonKruskal";
-            this.botonKruskal.Size = new System.Drawing.Size(149, 50);
-            this.botonKruskal.TabIndex = 10;
-            this.botonKruskal.Text = "Kruskal";
-            this.botonKruskal.UseVisualStyleBackColor = true;
-            this.botonKruskal.Click += new System.EventHandler(this.botonKruskal_Click);
-            // 
             // txtOrigen
             // 
             this.txtOrigen.Location = new System.Drawing.Point(719, 315);
@@ -227,31 +171,26 @@
             this.btnFlecha.Text = "→";
             this.btnFlecha.UseVisualStyleBackColor = true;
             // 
-            // btnGenerarAmbos
+            // btnDijkstra
             // 
-            this.btnGenerarAmbos.Location = new System.Drawing.Point(814, 400);
-            this.btnGenerarAmbos.Name = "btnGenerarAmbos";
-            this.btnGenerarAmbos.Size = new System.Drawing.Size(149, 50);
-            this.btnGenerarAmbos.TabIndex = 15;
-            this.btnGenerarAmbos.Text = "Generar Ambos";
-            this.btnGenerarAmbos.UseVisualStyleBackColor = true;
-            this.btnGenerarAmbos.Click += new System.EventHandler(this.btnGenerarAmbos_Click);
+            this.btnDijkstra.Location = new System.Drawing.Point(705, 176);
+            this.btnDijkstra.Name = "btnDijkstra";
+            this.btnDijkstra.Size = new System.Drawing.Size(149, 50);
+            this.btnDijkstra.TabIndex = 15;
+            this.btnDijkstra.Text = "Dijkstra";
+            this.btnDijkstra.UseVisualStyleBackColor = true;
+            this.btnDijkstra.Click += new System.EventHandler(this.btnDijkstra_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1076, 550);
-            this.Controls.Add(this.btnGenerarAmbos);
+            this.Controls.Add(this.btnDijkstra);
             this.Controls.Add(this.btnFlecha);
             this.Controls.Add(this.btnBuscar);
             this.Controls.Add(this.txtDestino);
             this.Controls.Add(this.txtOrigen);
-            this.Controls.Add(this.botonKruskal);
-            this.Controls.Add(this.botonPrim);
-            this.Controls.Add(this.listaDespues);
-            this.Controls.Add(this.listaAntes);
-            this.Controls.Add(this.botonOrdenar);
             this.Controls.Add(this.botonConectar);
             this.Controls.Add(this.nodosConectados);
             this.Controls.Add(this.listBox1);
@@ -277,18 +216,13 @@
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.TreeView nodosConectados;
         private System.Windows.Forms.Button botonConectar;
-        private System.Windows.Forms.Button botonOrdenar;
-        private System.Windows.Forms.ListBox listaAntes;
-        private System.Windows.Forms.ListBox listaDespues;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem origenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem destinoToolStripMenuItem;
-        private System.Windows.Forms.Button botonPrim;
-        private System.Windows.Forms.Button botonKruskal;
         private System.Windows.Forms.TextBox txtOrigen;
         private System.Windows.Forms.TextBox txtDestino;
         private System.Windows.Forms.Button btnBuscar;
         private System.Windows.Forms.Button btnFlecha;
-        private System.Windows.Forms.Button btnGenerarAmbos;
+        private System.Windows.Forms.Button btnDijkstra;
     }
 }
