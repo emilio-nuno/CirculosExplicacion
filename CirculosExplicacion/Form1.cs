@@ -23,6 +23,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
     {//Usar listbox
         private Dictionary<int, List<int>> caminosMinimos;
         private Bitmap originalImage;
+        private Bitmap backupOriginalImage;
         private Dictionary<int, Tuple<int, int, int>> centros;
         private Dictionary<int, List<Dictionary<int, VerticeConectado>>> conexiones; //Does not have to be list of dicts
         private bool sobreescribir;
@@ -108,11 +109,11 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
-        private void DibujarArista(int idOrigen, int idDestino, Bitmap imagen)
+        private void DibujarArista(int idOrigen, int idDestino, Bitmap imagen, Color color)
         {
             using (var graphics = Graphics.FromImage(imagen))
             {
-                graphics.DrawLine(new Pen(Color.Red, 5), centros[idOrigen].Item1, centros[idOrigen].Item2, centros[idDestino].Item1, centros[idDestino].Item2);
+                graphics.DrawLine(new Pen(color, 5), centros[idOrigen].Item1, centros[idOrigen].Item2, centros[idDestino].Item1, centros[idDestino].Item2);
             }
         }
 
@@ -182,6 +183,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 if (v != origen)
                 {
                     List<int> listTemp = new List<int>();
+                    listTemp.Add(origen);
                     imprimirCamino(padre, v, listTemp);
                     caminosMinimos.Add(v, listTemp);
 
@@ -189,19 +191,35 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
+        private Color colorAleatorio(Random rnd)
+        {
+            Color colorRandom = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+            return colorRandom;
+        }
+
+        private void dibujarCaminos(Random rnd)
+        {
+            foreach (int vertice in caminosMinimos.Keys)
+            {
+                if(caminosMinimos[vertice].Count == 2)
+                {
+                    DibujarArista(caminosMinimos[vertice][0], caminosMinimos[vertice][1], originalImage, colorAleatorio(rnd));
+                }
+                else
+                {
+                    for (int paso = 0; paso <= caminosMinimos[vertice].Count - 2; paso++) //vamos de n a n-1
+                    {
+                        Color colorSeleccionado = colorAleatorio(rnd);
+                        DibujarArista(caminosMinimos[vertice][paso], caminosMinimos[vertice][paso + 1], originalImage, colorSeleccionado);
+                    }
+                }
+            }
+        }
+
         private void btnDijkstra_Click(object sender, EventArgs e)
         {
             int origen = Int32.Parse(Interaction.InputBox("Por favor elija el origen", "Vértce Origen", "0", -1, -1));
-            double[,] matriz =  new double[9, 9]{ { 0, 4, 0, 0, 0, 0, 0, 8, 0 }, 
-                        { 4, 0, 8, 0, 0, 0, 0, 11, 0 }, 
-                        { 0, 8, 0, 7, 0, 4, 0, 0, 2 }, 
-                        { 0, 0, 7, 0, 9, 14, 0, 0, 0 }, 
-                        { 0, 0, 0, 9, 0, 10, 0, 0, 0 }, 
-                        { 0, 0, 4, 14, 10, 0, 2, 0, 0 }, 
-                        { 0, 0, 0, 0, 0, 2, 0, 1, 6 }, 
-                        { 8, 11, 0, 0, 0, 0, 1, 0, 7 }, 
-                        { 0, 0, 2, 0, 0, 0, 6, 7, 0 } };
-
+            double[,] matriz = ConseguirMatriz();
             int V = (int)Math.Sqrt(matriz.Length); //Como construir ARM
             double[] distancias = new double[V];
             bool[] visitados = new bool[V]; //Bool se inicializa en falso
@@ -229,6 +247,10 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 }
             }
             generarCaminos(padre, V, origen);
+            Random rnd = new Random();
+            dibujarCaminos(rnd);
+            selectedImage.Image = originalImage;
+            selectedImage.Refresh();
         }
 
         private void btnBuscar_Click(object sender, EventArgs e)
