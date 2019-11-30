@@ -21,7 +21,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
     public partial class Form1 : Form
     {//Usar listbox
-        private Dictionary<int, List<int>> caminosMinimos;
+        private Dictionary<int, List<int>> caminosMinimos; //Mover a local para poder reiniciar correctamente
         private Bitmap originalImage;
         private Bitmap backupOriginalImage;
         private Dictionary<int, Tuple<int, int, int>> centros;
@@ -64,6 +64,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             conexiones = g.conexiones;
             caminos = g.caminos;
             selectedImage.Refresh();
+            backupOriginalImage = new Bitmap(originalImage);
             //originalImage.Save("C:\\Users\\super\\Pictures\\new.png", System.Drawing.Imaging.ImageFormat.Png);
             if (sobreescribir)
             {
@@ -149,7 +150,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             return matriz;
         }
 
-        private int distanciaMinima(double[,] matriz, double[] distancias, bool[] visitados)
+        private int DistanciaMinima(double[,] matriz, double[] distancias, bool[] visitados)
         {
             int V = (int)Math.Sqrt(matriz.Length);
             double min = double.MaxValue;
@@ -166,17 +167,17 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             return idxMin;
         }
 
-        private void imprimirCamino(int[] padre, int origen, List<int> camino)
+        private void ImprimirCamino(int[] padre, int origen, List<int> camino)
         {
             if(padre[origen] == -1)
             {
                 return;
             }
-            imprimirCamino(padre, padre[origen], camino);
+            ImprimirCamino(padre, padre[origen], camino);
             camino.Add(origen);
         }
 
-        void generarCaminos(int[] padre, int numNodos, int origen)
+        void GenerarCaminos(int[] padre, int numNodos, int origen)
         {
             for (int v = 0; v < numNodos; v++)
             {
@@ -184,34 +185,27 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 {
                     List<int> listTemp = new List<int>();
                     listTemp.Add(origen);
-                    imprimirCamino(padre, v, listTemp);
+                    ImprimirCamino(padre, v, listTemp);
                     caminosMinimos.Add(v, listTemp);
 
                 }
             }
         }
 
-        private Color colorAleatorio(Random rnd)
+        private Color ColorAleatorio(Random rnd)
         {
             Color colorRandom = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
             return colorRandom;
         }
 
-        private void dibujarCaminos(Random rnd)
+        private void DibujarCaminos(Random rnd)
         {
             foreach (int vertice in caminosMinimos.Keys)
             {
-                if(caminosMinimos[vertice].Count == 2)
+                for (int paso = 0; paso <= caminosMinimos[vertice].Count - 2; paso++) //vamos de n a n-1
                 {
-                    DibujarArista(caminosMinimos[vertice][0], caminosMinimos[vertice][1], originalImage, colorAleatorio(rnd));
-                }
-                else
-                {
-                    for (int paso = 0; paso <= caminosMinimos[vertice].Count - 2; paso++) //vamos de n a n-1
-                    {
-                        Color colorSeleccionado = colorAleatorio(rnd);
-                        DibujarArista(caminosMinimos[vertice][paso], caminosMinimos[vertice][paso + 1], originalImage, colorSeleccionado);
-                    }
+                    Color colorSeleccionado = ColorAleatorio(rnd);
+                    DibujarArista(caminosMinimos[vertice][paso], caminosMinimos[vertice][paso + 1], originalImage, colorSeleccionado);
                 }
             }
         }
@@ -235,7 +229,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
             for (int contador = 0; contador < V - 1; contador++)
             {
-                int u = distanciaMinima(matriz, distancias, visitados);
+                int u = DistanciaMinima(matriz, distancias, visitados);
                 visitados[u] = true;
                 for (int v = 0; v < V; v++)
                 {
@@ -246,22 +240,23 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                     }
                 }
             }
-            generarCaminos(padre, V, origen);
+            GenerarCaminos(padre, V, origen);
             Random rnd = new Random();
-            dibujarCaminos(rnd);
+            DibujarCaminos(rnd);
             selectedImage.Image = originalImage;
             selectedImage.Refresh();
         }
 
         private void btnBuscar_Click(object sender, EventArgs e)
         {
-            int V = (int)Math.Sqrt(ARM.Length); //Como construir ARM
-            int origen = Int32.Parse(txtOrigen.Text);
+            int origen = Int32.Parse(txtOrigen.Text); //origen debe ser solo el elemento raíz del algoritmo de Dijkstra
             int destino = Int32.Parse(txtDestino.Text);
             using (Bitmap bmp = new Bitmap(originalImage))
             {
-                //DFS(origen, visitados, destino, bmp, origen);
-                //Meter función de búsqueda aquí
+                for (int paso = 0; paso <= caminosMinimos[destino].Count - 2; paso++)
+                {
+                    Caminar(caminosMinimos[destino][paso], caminosMinimos[destino][paso+1], bmp);
+                }
             }
         }
 
@@ -272,12 +267,19 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             {
                 selectedImage.BackgroundImage = originalImage;
                 selectedImage.BackgroundImageLayout = ImageLayout.Zoom; //Para que encuadre
-                DibujarCirculo(caminos[origen][destino][pos].Item1, caminos[origen][destino][pos].Item2, bmp, 10, Color.Red);
+                DibujarCirculo(caminos[origen][destino][pos].Item1, caminos[origen][destino][pos].Item2, bmp, 40, Color.Blue);
                 selectedImage.Image = bmp;
                 selectedImage.Refresh();
                 Thread.Sleep(1);
                 pos += 10;
             }
+        }
+
+        private void btnReiniciar_Click(object sender, EventArgs e)
+        {
+            caminosMinimos.Clear();
+            selectedImage.Image = backupOriginalImage;
+            selectedImage.Refresh();
         }
     }
 }
