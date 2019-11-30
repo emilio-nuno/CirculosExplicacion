@@ -21,6 +21,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
     public partial class Form1 : Form
     {//Usar listbox
+        private Dictionary<int, List<int>> caminosMinimos;
         private Bitmap originalImage;
         private Dictionary<int, Tuple<int, int, int>> centros;
         private Dictionary<int, List<Dictionary<int, VerticeConectado>>> conexiones; //Does not have to be list of dicts
@@ -37,6 +38,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             this.agentes = new List<Agente>();
             InitializeComponent();
             this.sobreescribir = false;
+            this.caminosMinimos = new Dictionary<int, List<int>>();
         }
 
         private void botonSelect_Click(object sender, EventArgs e)
@@ -146,8 +148,6 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             return matriz;
         }
 
-
-
         private int distanciaMinima(double[,] matriz, double[] distancias, bool[] visitados)
         {
             int V = (int)Math.Sqrt(matriz.Length);
@@ -165,14 +165,28 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             return idxMin;
         }
 
-        private void imprimirCamino(int[] padre, int origen)
+        private void imprimirCamino(int[] padre, int origen, List<int> camino)
         {
             if(padre[origen] == -1)
             {
                 return;
             }
-            imprimirCamino(padre, padre[origen]);
-            Console.Write("{0} ", origen);
+            imprimirCamino(padre, padre[origen], camino);
+            camino.Add(origen);
+        }
+
+        void generarCaminos(int[] padre, int numNodos, int origen)
+        {
+            for (int v = 0; v < numNodos; v++)
+            {
+                if (v != origen)
+                {
+                    List<int> listTemp = new List<int>();
+                    imprimirCamino(padre, v, listTemp);
+                    caminosMinimos.Add(v, listTemp);
+
+                }
+            }
         }
 
         private void btnDijkstra_Click(object sender, EventArgs e)
@@ -207,16 +221,14 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 visitados[u] = true;
                 for (int v = 0; v < V; v++)
                 {
-                    if(!visitados[v] && matriz[u, v] != 0  && distancias[u] + matriz[u, v] < distancias[v])
+                    if (!visitados[v] && matriz[u, v] != 0 && distancias[u] + matriz[u, v] < distancias[v])
                     {
                         distancias[v] = distancias[u] + matriz[u, v];
                         padre[v] = u;
-                    } 
+                    }
                 }
             }
-
-            imprimirCamino(padre, 0);
-            Console.WriteLine("Ayuda");
+            generarCaminos(padre, V, origen);
         }
 
         private void btnBuscar_Click(object sender, EventArgs e)
