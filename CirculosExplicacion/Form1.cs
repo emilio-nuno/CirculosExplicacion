@@ -146,6 +146,8 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             return matriz;
         }
 
+
+
         private int distanciaMinima(double[,] matriz, double[] distancias, bool[] visitados)
         {
             int V = (int)Math.Sqrt(matriz.Length);
@@ -161,6 +163,16 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 }
             }
             return idxMin;
+        }
+
+        private void imprimirCamino(int[] padre, int origen)
+        {
+            if(padre[origen] == -1)
+            {
+                return;
+            }
+            imprimirCamino(padre, padre[origen]);
+            Console.Write("{0} ", origen);
         }
 
         private void btnDijkstra_Click(object sender, EventArgs e)
@@ -179,11 +191,13 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             int V = (int)Math.Sqrt(matriz.Length); //Como construir ARM
             double[] distancias = new double[V];
             bool[] visitados = new bool[V]; //Bool se inicializa en falso
+            int[] padre = new int[V]; //Contiene los caminos
 
             for (int v = 0; v < V; v++)
             {
                 distancias[v] = double.MaxValue;
             }
+            padre[origen] = -1;
 
             distancias[origen] = 0;
 
@@ -193,14 +207,16 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 visitados[u] = true;
                 for (int v = 0; v < V; v++)
                 {
-                    if(!visitados[v] && matriz[u, v] != 0 && distancias[u] != double.MaxValue && distancias[u] + matriz[u, v] < distancias[v])
+                    if(!visitados[v] && matriz[u, v] != 0  && distancias[u] + matriz[u, v] < distancias[v])
                     {
                         distancias[v] = distancias[u] + matriz[u, v];
+                        padre[v] = u;
                     } 
                 }
             }
 
-            Console.WriteLine("Terminado");
+            imprimirCamino(padre, 0);
+            Console.WriteLine("Ayuda");
         }
 
         private void btnBuscar_Click(object sender, EventArgs e)
