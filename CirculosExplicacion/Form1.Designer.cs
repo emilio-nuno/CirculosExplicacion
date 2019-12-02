@@ -42,7 +42,6 @@
             this.txtDestino = new System.Windows.Forms.TextBox();
             this.btnBuscar = new System.Windows.Forms.Button();
             this.btnDijkstra = new System.Windows.Forms.Button();
-            this.btnReiniciar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.selectedImage)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -156,7 +155,7 @@
             // 
             // btnDijkstra
             // 
-            this.btnDijkstra.Location = new System.Drawing.Point(705, 245);
+            this.btnDijkstra.Location = new System.Drawing.Point(814, 259);
             this.btnDijkstra.Name = "btnDijkstra";
             this.btnDijkstra.Size = new System.Drawing.Size(149, 50);
             this.btnDijkstra.TabIndex = 15;
@@ -164,22 +163,11 @@
             this.btnDijkstra.UseVisualStyleBackColor = true;
             this.btnDijkstra.Click += new System.EventHandler(this.btnDijkstra_Click);
             // 
-            // btnReiniciar
-            // 
-            this.btnReiniciar.Location = new System.Drawing.Point(915, 245);
-            this.btnReiniciar.Name = "btnReiniciar";
-            this.btnReiniciar.Size = new System.Drawing.Size(149, 50);
-            this.btnReiniciar.TabIndex = 16;
-            this.btnReiniciar.Text = "Reiniciar";
-            this.btnReiniciar.UseVisualStyleBackColor = true;
-            this.btnReiniciar.Click += new System.EventHandler(this.btnReiniciar_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1076, 550);
-            this.Controls.Add(this.btnReiniciar);
             this.Controls.Add(this.btnDijkstra);
             this.Controls.Add(this.btnBuscar);
             this.Controls.Add(this.txtDestino);
@@ -214,6 +202,5 @@
         private System.Windows.Forms.TextBox txtDestino;
         private System.Windows.Forms.Button btnBuscar;
         private System.Windows.Forms.Button btnDijkstra;
-        private System.Windows.Forms.Button btnReiniciar;
     }
 }

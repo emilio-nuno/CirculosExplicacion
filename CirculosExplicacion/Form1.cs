@@ -70,18 +70,6 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             {
                 nodosConectados.Nodes.Clear();
             }
-
-            for (int i = 0; i < conexiones.Count; i++)
-            {
-                nodosConectados.Nodes.Add(i.ToString());
-                foreach (Dictionary<int, VerticeConectado> lista in conexiones[i])
-                {
-                    foreach (int id in lista.Keys)
-                    {
-                        nodosConectados.Nodes[i].Nodes.Add(id.ToString());
-                    }
-                }
-            }
             sobreescribir = true;
             ARM = ConseguirMatrizARM();
         }
@@ -211,6 +199,12 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void btnDijkstra_Click(object sender, EventArgs e)
         {
+            nodosConectados.Nodes.Clear();
+            imagenEditar = (Bitmap)originalImage.Clone();
+            caminosMinimos.Clear();
+            selectedImage.Image = imagenEditar;
+            selectedImage.Refresh();
+
             int origen = Int32.Parse(Interaction.InputBox("Por favor elija el origen", "Vértce Origen", "0", -1, -1));
             double[,] matriz = ConseguirMatriz();
             int V = (int)Math.Sqrt(matriz.Length); //Como construir ARM
@@ -250,6 +244,17 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             DibujarCaminos(rnd);
             selectedImage.Image = imagenEditar;
             selectedImage.Refresh();
+
+            int i = 0;
+            foreach (int vertice in caminosMinimos.Keys)
+            {
+                nodosConectados.Nodes.Add(vertice.ToString());
+                foreach (int paso in caminosMinimos[vertice])
+                {
+                    nodosConectados.Nodes[i].Nodes.Add(paso.ToString());
+                }
+                i++;
+            }
         }
 
         private void btnBuscar_Click(object sender, EventArgs e)
@@ -282,14 +287,6 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 Thread.Sleep(1);
                 pos += 10;
             }
-        }
-
-        private void btnReiniciar_Click(object sender, EventArgs e)
-        {
-            imagenEditar = (Bitmap)originalImage.Clone();
-            caminosMinimos.Clear();
-            selectedImage.Image = imagenEditar;
-            selectedImage.Refresh();
         }
     }
 }
