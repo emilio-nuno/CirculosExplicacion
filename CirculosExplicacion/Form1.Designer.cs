@@ -39,10 +39,8 @@
             this.origenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.destinoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.botonConectar = new System.Windows.Forms.Button();
-            this.txtOrigen = new System.Windows.Forms.TextBox();
             this.txtDestino = new System.Windows.Forms.TextBox();
             this.btnBuscar = new System.Windows.Forms.Button();
-            this.btnFlecha = new System.Windows.Forms.Button();
             this.btnDijkstra = new System.Windows.Forms.Button();
             this.btnReiniciar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.selectedImage)).BeginInit();
@@ -139,16 +137,9 @@
             this.botonConectar.UseVisualStyleBackColor = true;
             this.botonConectar.Click += new System.EventHandler(this.botonConectar_Click);
             // 
-            // txtOrigen
-            // 
-            this.txtOrigen.Location = new System.Drawing.Point(719, 315);
-            this.txtOrigen.Name = "txtOrigen";
-            this.txtOrigen.Size = new System.Drawing.Size(100, 22);
-            this.txtOrigen.TabIndex = 11;
-            // 
             // txtDestino
             // 
-            this.txtDestino.Location = new System.Drawing.Point(964, 315);
+            this.txtDestino.Location = new System.Drawing.Point(838, 315);
             this.txtDestino.Name = "txtDestino";
             this.txtDestino.Size = new System.Drawing.Size(100, 22);
             this.txtDestino.TabIndex = 12;
@@ -162,15 +153,6 @@
             this.btnBuscar.Text = "Buscar";
             this.btnBuscar.UseVisualStyleBackColor = true;
             this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
-            // 
-            // btnFlecha
-            // 
-            this.btnFlecha.Location = new System.Drawing.Point(879, 314);
-            this.btnFlecha.Name = "btnFlecha";
-            this.btnFlecha.Size = new System.Drawing.Size(29, 23);
-            this.btnFlecha.TabIndex = 14;
-            this.btnFlecha.Text = "→";
-            this.btnFlecha.UseVisualStyleBackColor = true;
             // 
             // btnDijkstra
             // 
@@ -199,10 +181,8 @@
             this.ClientSize = new System.Drawing.Size(1076, 550);
             this.Controls.Add(this.btnReiniciar);
             this.Controls.Add(this.btnDijkstra);
-            this.Controls.Add(this.btnFlecha);
             this.Controls.Add(this.btnBuscar);
             this.Controls.Add(this.txtDestino);
-            this.Controls.Add(this.txtOrigen);
             this.Controls.Add(this.botonConectar);
             this.Controls.Add(this.nodosConectados);
             this.Controls.Add(this.listBox1);
@@ -231,10 +211,8 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem origenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem destinoToolStripMenuItem;
-        private System.Windows.Forms.TextBox txtOrigen;
         private System.Windows.Forms.TextBox txtDestino;
         private System.Windows.Forms.Button btnBuscar;
-        private System.Windows.Forms.Button btnFlecha;
         private System.Windows.Forms.Button btnDijkstra;
         private System.Windows.Forms.Button btnReiniciar;
     }

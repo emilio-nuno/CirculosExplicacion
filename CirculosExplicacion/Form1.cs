@@ -65,7 +65,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             caminos = g.caminos;
             selectedImage.Refresh();
             backupOriginalImage = new Bitmap(originalImage);
-            //originalImage.Save("C:\\Users\\super\\Pictures\\new.png", System.Drawing.Imaging.ImageFormat.Png);
+            originalImage.Save("C:\\Users\\super\\Pictures\\new.png", System.Drawing.Imaging.ImageFormat.Png);
             if (sobreescribir)
             {
                 nodosConectados.Nodes.Clear();
@@ -181,7 +181,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
         {
             for (int v = 0; v < numNodos; v++)
             {
-                if (v != origen)
+                if (v != origen && padre[v] != -2)
                 {
                     List<int> listTemp = new List<int>();
                     listTemp.Add(origen);
@@ -223,6 +223,12 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             {
                 distancias[v] = double.MaxValue;
             }
+
+            for (int v = 0; v < V; v++) //-2 va a representar sin padre
+            {
+                padre[v] = -2;
+            }
+
             padre[origen] = -1;
 
             distancias[origen] = 0;
@@ -249,8 +255,12 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void btnBuscar_Click(object sender, EventArgs e)
         {
-            int origen = Int32.Parse(txtOrigen.Text); //origen debe ser solo el elemento raíz del algoritmo de Dijkstra
             int destino = Int32.Parse(txtDestino.Text);
+            if (!caminosMinimos.ContainsKey(destino))
+            {
+                MessageBox.Show("No se puede llegar a el vértice deseado desde el origen actual");
+                return;
+            }
             using (Bitmap bmp = new Bitmap(originalImage))
             {
                 for (int paso = 0; paso <= caminosMinimos[destino].Count - 2; paso++)
