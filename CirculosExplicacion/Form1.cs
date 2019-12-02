@@ -23,7 +23,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
     {//Usar listbox
         private Dictionary<int, List<int>> caminosMinimos; //Mover a local para poder reiniciar correctamente
         private Bitmap originalImage;
-        private Bitmap backupOriginalImage;
+        private Bitmap imagenEditar;
         private Dictionary<int, Tuple<int, int, int>> centros;
         private Dictionary<int, List<Dictionary<int, VerticeConectado>>> conexiones; //Does not have to be list of dicts
         private bool sobreescribir;
@@ -64,7 +64,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             conexiones = g.conexiones;
             caminos = g.caminos;
             selectedImage.Refresh();
-            backupOriginalImage = new Bitmap(originalImage);
+            imagenEditar = new Bitmap(originalImage);
             originalImage.Save("C:\\Users\\super\\Pictures\\new.png", System.Drawing.Imaging.ImageFormat.Png);
             if (sobreescribir)
             {
@@ -187,7 +187,6 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                     listTemp.Add(origen);
                     ImprimirCamino(padre, v, listTemp);
                     caminosMinimos.Add(v, listTemp);
-
                 }
             }
         }
@@ -205,7 +204,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 for (int paso = 0; paso <= caminosMinimos[vertice].Count - 2; paso++) //vamos de n a n-1
                 {
                     Color colorSeleccionado = ColorAleatorio(rnd);
-                    DibujarArista(caminosMinimos[vertice][paso], caminosMinimos[vertice][paso + 1], originalImage, colorSeleccionado);
+                    DibujarArista(caminosMinimos[vertice][paso], caminosMinimos[vertice][paso + 1], imagenEditar, colorSeleccionado);
                 }
             }
         }
@@ -249,7 +248,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             GenerarCaminos(padre, V, origen);
             Random rnd = new Random();
             DibujarCaminos(rnd);
-            selectedImage.Image = originalImage;
+            selectedImage.Image = imagenEditar;
             selectedImage.Refresh();
         }
 
@@ -261,7 +260,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 MessageBox.Show("No se puede llegar a el vértice deseado desde el origen actual");
                 return;
             }
-            using (Bitmap bmp = new Bitmap(originalImage))
+            using (Bitmap bmp = new Bitmap(imagenEditar))
             {
                 for (int paso = 0; paso <= caminosMinimos[destino].Count - 2; paso++)
                 {
@@ -287,8 +286,9 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void btnReiniciar_Click(object sender, EventArgs e)
         {
+            imagenEditar = (Bitmap)originalImage.Clone();
             caminosMinimos.Clear();
-            selectedImage.Image = backupOriginalImage;
+            selectedImage.Image = imagenEditar;
             selectedImage.Refresh();
         }
     }
