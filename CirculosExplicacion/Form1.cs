@@ -197,7 +197,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
-        private void btnDijkstra_Click(object sender, EventArgs e)
+        private void Dijkstra(int origen)
         {
             nodosConectados.Nodes.Clear();
             imagenEditar = (Bitmap)originalImage.Clone();
@@ -205,7 +205,6 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             selectedImage.Image = imagenEditar;
             selectedImage.Refresh();
 
-            int origen = Int32.Parse(Interaction.InputBox("Por favor elija el origen", "Vértce Origen", "0", -1, -1));
             double[,] matriz = ConseguirMatriz();
             int V = (int)Math.Sqrt(matriz.Length); //Como construir ARM
             double[] distancias = new double[V];
@@ -257,6 +256,12 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
+        private void btnDijkstra_Click(object sender, EventArgs e)
+        {
+            int origen = Int32.Parse(Interaction.InputBox("Por favor elija el origen", "Vértce Origen", "0", -1, -1));
+            Dijkstra(origen);
+        }
+
         private void btnBuscar_Click(object sender, EventArgs e)
         {
             int destino = Int32.Parse(txtDestino.Text);
@@ -272,6 +277,8 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                     Caminar(caminosMinimos[destino][paso], caminosMinimos[destino][paso+1], bmp);
                 }
             }
+            int actual = caminosMinimos[destino][caminosMinimos[destino].Count - 1];
+            Dijkstra(actual);
         }
 
         private void Caminar(int origen, int destino, Bitmap bmp)
