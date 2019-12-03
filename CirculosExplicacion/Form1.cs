@@ -173,13 +173,11 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             var destino = from entry in prioridad where entry.Value == ordenado.Min() select entry.Key;
             int destinoactual = destino.FirstOrDefault();
 
-            var iguales = visitados[a.Inicial][a.Actual].GroupBy(x => x.Value).Where(x => x.Count() > 1);
-            using(var secuencia = iguales.GetEnumerator())
+            var iguales = visitados[a.Inicial][a.Actual].Where(i => visitados[a.Inicial][a.Actual].Any(t => t.Key != i.Key && t.Value == i.Value)).ToDictionary(i => i.Key, i => i.Value);
+            Dictionary<int, double> mismasVisitas = new Dictionary<int, double>();
+            foreach(var duplicado in iguales.Keys)
             {
-                while (secuencia.MoveNext())
-                {
-                    Console.WriteLine(secuencia.Current);
-                }
+                mismasVisitas.Add(duplicado, prioridad[duplicado]);
             }
 
            if(todosVisitados)
@@ -195,7 +193,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 }
                 else
                 {
-                    int id = visitados[a.Inicial][a.Actual].Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
+                    int id = mismasVisitas.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
                     return id;
                 }
             }
