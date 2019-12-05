@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace CirculosExplicacion
 {
-    class Agente
+    class Presa
     {
-        private int x, y, r, actual, velocidad, pos, inicial; //Actual contiene el vértice en el que se encuentra el agente luego de caminar
+        private int x, y, r, actual, velocidad, pos, inicial, resistencia; //Actual contiene el vértice en el que se encuentra el agente luego de caminar
         private Color color;
 
         public int X { get => x; set => x = value; }
@@ -20,16 +20,32 @@ namespace CirculosExplicacion
         public int Pos { get => pos; set => pos = value; }
         public int Inicial { get => inicial; set => inicial = value; }
         public Color Color { get => color; set => color = value; }
+        public int Resistencia { get => resistencia; set => resistencia = value; }
 
-        public Agente(int x, int y, int r, int actual, int inicial, Color color)
+        public Presa(int x, int y, int r, int actual, int inicial, int velocidad, Color color)
         {
             this.x = x;
             this.y = y;
             this.r = r;
             this.actual = actual;
-            this.velocidad = 1;
-            this.Inicial = inicial;
-            this.Color = color;
+            this.velocidad = velocidad;
+            this.inicial = inicial;
+            this.color = color;
+        }
+
+        private void PerderVida()
+        {
+            resistencia -= 1;
+        }
+
+        private void GanarVida()
+        {
+            resistencia += 1;
+        }
+
+        private void Maniobrar()
+        {
+            Console.WriteLine("He maniobrado");
         }
     }
 }

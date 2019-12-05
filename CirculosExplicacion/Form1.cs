@@ -30,13 +30,13 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
         private Circle primera;
         private Grafo g;
         private Dictionary<int, Dictionary<int, List<Tuple<int, int>>>> caminos;
-        private List<Agente> agentes;
-        private Señuelo señuelo;
+        private List<Presa> agentes;
+        private Objetivo señuelo;
         private double[,] ARM;
 
         public Form1()
         {
-            this.agentes = new List<Agente>();
+            this.agentes = new List<Presa>();
             InitializeComponent();
             this.sobreescribir = false;
             this.caminosMinimos = new Dictionary<int, List<int>>();
@@ -81,12 +81,12 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void origenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            agentes.Add(new Agente(centros[Int32.Parse(nodosConectados.SelectedNode.Text)].Item1, centros[Int32.Parse(nodosConectados.SelectedNode.Text)].Item2, 50, Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), Color.Transparent)); //Agregar color manual
+            agentes.Add(new Presa(centros[Int32.Parse(nodosConectados.SelectedNode.Text)].Item1, centros[Int32.Parse(nodosConectados.SelectedNode.Text)].Item2, 50, Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), Color.Transparent)); //Agregar color manual
         }
 
         private void destinoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            señuelo = new Señuelo(centros[Int32.Parse(nodosConectados.SelectedNode.Text)].Item1, centros[Int32.Parse(nodosConectados.SelectedNode.Text)].Item2, Int32.Parse(nodosConectados.SelectedNode.Text));
+            señuelo = new Objetivo(centros[Int32.Parse(nodosConectados.SelectedNode.Text)].Item1, centros[Int32.Parse(nodosConectados.SelectedNode.Text)].Item2, Int32.Parse(nodosConectados.SelectedNode.Text));
         }
 
         private void DibujarCirculo(int x, int y, Bitmap bmp, int radio, Color color)

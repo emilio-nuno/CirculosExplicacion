@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CirculosExplicacion
 {
-    class Señuelo
+    class Objetivo
     {
         private int x, y, actual;
 
@@ -14,7 +14,7 @@ namespace CirculosExplicacion
         public int Y { get => y; set => y = value; }
         public int Actual { get => actual; set => actual = value; }
 
-        public Señuelo(int x, int y, int actual)
+        public Objetivo(int x, int y, int actual)
         {
             this.x = x;
             this.y = y;
