@@ -18,6 +18,7 @@ namespace CirculosExplicacion
         public Dictionary<int, List<int>> CaminosMinimos { get => caminosMinimos; set => caminosMinimos = value; }
         public static int Objetivo { get => objetivo; set => objetivo = value; }
         public int Siguiente { get => siguiente; set => siguiente = value; }
+        public int Resistencia { get => resistencia; private set => resistencia = value; }
 
         public static void Inicializar(double[,] matriz)
         {
@@ -31,7 +32,7 @@ namespace CirculosExplicacion
             Velocidad = velocidad;
             ColorEntidad = color;
 
-            resistencia = 1;
+            Resistencia = 1;
             acechadaPor = -1;
             caminosMinimos = new Dictionary<int, List<int>>();
             Dijkstra();
@@ -146,9 +147,9 @@ namespace CirculosExplicacion
 
         public void PerderVida()
         {
-            if(resistencia > 0)
+            if(Resistencia > 0)
             {
-                resistencia -= 1;
+                Resistencia -= 1;
             }
             else
             {
@@ -158,7 +159,7 @@ namespace CirculosExplicacion
 
         public void GanarVida()
         {
-            resistencia += 1;
+            Resistencia += 1;
         }
     }
 }

@@ -92,13 +92,13 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             Presa.Objetivo = Int32.Parse(nodosConectados.SelectedNode.Text);
         }
 
-        private void DibujarPresa(int x, int y, Bitmap bmp, int radio, Color color)
+        private void DibujarPresa(Presa presa, Bitmap bmp, int radio, Color color)
         {
             using (var graphics = Graphics.FromImage(bmp))
             {
                 graphics.Clear(Color.Transparent);
-                graphics.FillEllipse(new SolidBrush(color), x - (radio / 2), y - (radio / 2), radio, radio);
-                graphics.DrawString("Soy una presa", new Font("Arial", 16), new SolidBrush(Color.Black), x + 10, y + 10);
+                graphics.FillEllipse(new SolidBrush(color), presa.X - (radio / 2), presa.Y - (radio / 2), radio, radio);
+                graphics.DrawString(presa.Resistencia.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), presa.X + 10, presa.Y + 10);
             }
         }
 
@@ -151,25 +151,33 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void Caminar(Presa presa, Bitmap bmp)
         {
-            if(presa.Actual == Presa.Objetivo)
+            if (presa.Actual == Presa.Objetivo)
             {
+                presa.GanarVida();
                 ObjetivoAleatorio();
                 ReiniciarSim();
                 return;
             }
-            if (presa.Velocidad + presa.Pos < caminos[presa.Actual][presa.Siguiente].Count - 1)
-            {
-                selectedImage.BackgroundImage = originalImage;
-                selectedImage.BackgroundImageLayout = ImageLayout.Zoom; //Para que encuadre
-                DibujarPresa(caminos[presa.Actual][presa.Siguiente][presa.Pos].Item1, caminos[presa.Actual][presa.Siguiente][presa.Pos].Item2, bmp, 40, presa.ColorEntidad);
-                presa.Pos += presa.Velocidad;
-            }
             else
             {
-                DibujarPresa(caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item1, caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item2, bmp, 40, presa.ColorEntidad);
-                presa.Pos = 0;
-                presa.Actual = presa.Siguiente;
-                presa.NuevoDestino();
+                presa.X = caminos[presa.Actual][presa.Siguiente][presa.Pos].Item1;
+                presa.Y = caminos[presa.Actual][presa.Siguiente][presa.Pos].Item2;
+                if (presa.Velocidad + presa.Pos < caminos[presa.Actual][presa.Siguiente].Count - 1)
+                {
+                    selectedImage.BackgroundImage = originalImage;
+                    selectedImage.BackgroundImageLayout = ImageLayout.Zoom; //Para que encuadre
+                    DibujarPresa(presa, bmp, 40, presa.ColorEntidad);
+                    presa.Pos += presa.Velocidad;
+                }
+                else
+                {
+                    presa.X = caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item1;
+                    presa.Y = caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item2;
+                    DibujarPresa(presa, bmp, 40, presa.ColorEntidad);
+                    presa.Pos = 0;
+                    presa.Actual = presa.Siguiente;
+                    presa.NuevoDestino();
+                }
             }
         }
 
