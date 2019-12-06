@@ -14,11 +14,8 @@ namespace CirculosExplicacion
         public int AcechadaPor { get => acechadaPor; set => acechadaPor = value; }
         public Dictionary<int, List<int>> CaminosMinimos { get => caminosMinimos; set => caminosMinimos = value; }
 
-        public Presa(int x, int y, int r, int actual, int inicial, int velocidad, double[,] matriz, Color color)
+        public Presa(int actual, int inicial, int velocidad, double[,] matriz, Color color)
         {
-            X = x;
-            Y = y;
-            R = r;
             Actual = actual;
             Inicial = inicial;
             Velocidad = velocidad;
