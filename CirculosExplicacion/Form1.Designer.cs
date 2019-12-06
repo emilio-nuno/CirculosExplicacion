@@ -42,6 +42,7 @@
             this.txtDestino = new System.Windows.Forms.TextBox();
             this.btnBuscar = new System.Windows.Forms.Button();
             this.btnDijkstra = new System.Windows.Forms.Button();
+            this.btnProbar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.selectedImage)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -151,7 +152,6 @@
             this.btnBuscar.TabIndex = 13;
             this.btnBuscar.Text = "Buscar";
             this.btnBuscar.UseVisualStyleBackColor = true;
-            this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
             // 
             // btnDijkstra
             // 
@@ -163,11 +163,22 @@
             this.btnDijkstra.UseVisualStyleBackColor = true;
             this.btnDijkstra.Click += new System.EventHandler(this.btnDijkstra_Click);
             // 
+            // btnProbar
+            // 
+            this.btnProbar.Location = new System.Drawing.Point(705, 422);
+            this.btnProbar.Name = "btnProbar";
+            this.btnProbar.Size = new System.Drawing.Size(127, 52);
+            this.btnProbar.TabIndex = 16;
+            this.btnProbar.Text = "PROBAR";
+            this.btnProbar.UseVisualStyleBackColor = true;
+            this.btnProbar.Click += new System.EventHandler(this.btnProbar_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1076, 550);
+            this.Controls.Add(this.btnProbar);
             this.Controls.Add(this.btnDijkstra);
             this.Controls.Add(this.btnBuscar);
             this.Controls.Add(this.txtDestino);
@@ -202,5 +213,6 @@
         private System.Windows.Forms.TextBox txtDestino;
         private System.Windows.Forms.Button btnBuscar;
         private System.Windows.Forms.Button btnDijkstra;
+        private System.Windows.Forms.Button btnProbar;
     }
 }

@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
 
@@ -40,7 +35,6 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             InitializeComponent();
             this.sobreescribir = false;
             this.caminosMinimos = new Dictionary<int, List<int>>();
-            Presa p = new Presa(43, 23, 10, 0, 1, 10, Color.Red);
         }
 
         private void botonSelect_Click(object sender, EventArgs e)
@@ -72,7 +66,6 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 nodosConectados.Nodes.Clear();
             }
             sobreescribir = true;
-            ARM = ConseguirMatrizARM();
         }
 
         private void nodosConectados_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -123,163 +116,10 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             return matriz;
         }
 
-        private double[,] ConseguirMatrizARM()
-        {
-            double[,] matriz = new double[conexiones.Count, conexiones.Count];
-            foreach (int id in conexiones.Keys)
-            {
-                foreach (Dictionary<int, VerticeConectado> conexion in conexiones[id])
-                {
-                    foreach (int idConectado in conexion.Keys)
-                    {
-                        matriz[id, idConectado] = 0;
-                    }
-                }
-            }
-            return matriz;
-        }
-
-        private int DistanciaMinima(double[,] matriz, double[] distancias, bool[] visitados)
-        {
-            int V = (int)Math.Sqrt(matriz.Length);
-            double min = double.MaxValue;
-            int idxMin = 0; //Inicializamos
-
-            for (int v = 0; v < V; v++)
-            {
-                if(!visitados[v] && distancias[v] <= min)
-                {
-                    min = distancias[v];
-                    idxMin = v;
-                }
-            }
-            return idxMin;
-        }
-
-        private void ImprimirCamino(int[] padre, int origen, List<int> camino)
-        {
-            if(padre[origen] == -1)
-            {
-                return;
-            }
-            ImprimirCamino(padre, padre[origen], camino);
-            camino.Add(origen);
-        }
-
-        void GenerarCaminos(int[] padre, int numNodos, int origen)
-        {
-            for (int v = 0; v < numNodos; v++)
-            {
-                if (v != origen && padre[v] != -2)
-                {
-                    List<int> listTemp = new List<int>();
-                    listTemp.Add(origen);
-                    ImprimirCamino(padre, v, listTemp);
-                    caminosMinimos.Add(v, listTemp);
-                }
-            }
-        }
-
-        private Color ColorAleatorio(Random rnd)
-        {
-            Color colorRandom = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-            return colorRandom;
-        }
-
-        private void DibujarCaminos(Random rnd)
-        {
-            foreach (int vertice in caminosMinimos.Keys)
-            {
-                for (int paso = 0; paso <= caminosMinimos[vertice].Count - 2; paso++) //vamos de n a n-1
-                {
-                    Color colorSeleccionado = ColorAleatorio(rnd);
-                    DibujarArista(caminosMinimos[vertice][paso], caminosMinimos[vertice][paso + 1], imagenEditar, colorSeleccionado);
-                }
-            }
-        }
-
-        private void Dijkstra(int origen)
-        {
-            nodosConectados.Nodes.Clear();
-            imagenEditar = (Bitmap)originalImage.Clone();
-            caminosMinimos.Clear();
-            selectedImage.Image = imagenEditar;
-            selectedImage.Refresh();
-
-            double[,] matriz = ConseguirMatriz();
-            int V = (int)Math.Sqrt(matriz.Length); //Como construir ARM
-            double[] distancias = new double[V];
-            bool[] visitados = new bool[V]; //Bool se inicializa en falso
-            int[] padre = new int[V]; //Contiene los caminos
-
-            for (int v = 0; v < V; v++)
-            {
-                distancias[v] = double.MaxValue;
-            }
-
-            for (int v = 0; v < V; v++) //-2 va a representar sin padre
-            {
-                padre[v] = -2;
-            }
-
-            padre[origen] = -1;
-
-            distancias[origen] = 0;
-
-            for (int contador = 0; contador < V - 1; contador++)
-            {
-                int u = DistanciaMinima(matriz, distancias, visitados);
-                visitados[u] = true;
-                for (int v = 0; v < V; v++)
-                {
-                    if (!visitados[v] && matriz[u, v] != 0 && distancias[u] + matriz[u, v] < distancias[v])
-                    {
-                        distancias[v] = distancias[u] + matriz[u, v];
-                        padre[v] = u;
-                    }
-                }
-            }
-            GenerarCaminos(padre, V, origen);
-            Random rnd = new Random();
-            DibujarCaminos(rnd);
-            selectedImage.Image = imagenEditar;
-            selectedImage.Refresh();
-
-            int i = 0;
-            foreach (int vertice in caminosMinimos.Keys)
-            {
-                nodosConectados.Nodes.Add(vertice.ToString());
-                foreach (int paso in caminosMinimos[vertice])
-                {
-                    nodosConectados.Nodes[i].Nodes.Add(paso.ToString());
-                }
-                i++;
-            }
-        }
-
         private void btnDijkstra_Click(object sender, EventArgs e)
         {
-            int origen = Int32.Parse(Interaction.InputBox("Por favor elija el origen", "Vértce Origen", "0", -1, -1));
-            Dijkstra(origen);
-        }
-
-        private void btnBuscar_Click(object sender, EventArgs e)
-        {
-            int destino = Int32.Parse(txtDestino.Text);
-            if (!caminosMinimos.ContainsKey(destino))
-            {
-                MessageBox.Show("No se puede llegar a el vértice deseado desde el origen actual");
-                return;
-            }
-            using (Bitmap bmp = new Bitmap(imagenEditar))
-            {
-                for (int paso = 0; paso <= caminosMinimos[destino].Count - 2; paso++)
-                {
-                    Caminar(caminosMinimos[destino][paso], caminosMinimos[destino][paso+1], bmp);
-                }
-            }
-            int actual = caminosMinimos[destino][caminosMinimos[destino].Count - 1];
-            Dijkstra(actual);
+            Presa p = new Presa(1, 2, 3, 1, 0, 10, ConseguirMatriz(), Color.Red);
+            Console.WriteLine();
         }
 
         private void Caminar(int origen, int destino, Bitmap bmp)
@@ -295,6 +135,10 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 Thread.Sleep(1);
                 pos += 10;
             }
+        }
+
+        private void btnProbar_Click(object sender, EventArgs e)
+        {
         }
     }
 }
