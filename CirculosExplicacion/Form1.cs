@@ -119,42 +119,39 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void btnDijkstra_Click(object sender, EventArgs e)
         {
-            Presa p = new Presa(15, 15, 10, Color.Red);
-            Presa p2 = new Presa(1, 1, 10, Color.Red);
-
             using (Bitmap bmp = new Bitmap(originalImage))
             {
                 while (!finSim){
-                    foreach (int paso in p.CaminosMinimos[0])
+                    foreach(Presa pTemporal in presas)
                     {
-                        if (paso != p.Actual)
-                        {
-                            Caminar(p, paso, bmp);
-;                            selectedImage.Image = bmp;
-                            selectedImage.Refresh();
-                            Thread.Sleep(1);
-                            p.Actual = paso;
-                        }
+                        Caminar(pTemporal, bmp);
+                        selectedImage.Image = bmp;
+                        selectedImage.Refresh();
+                        Thread.Sleep(1);
                     }
                 }
             }
         }
 
-        private bool Caminar(Presa presa, int destino, Bitmap bmp)
+        private void Caminar(Presa presa, Bitmap bmp)
         {
-            if (presa.Velocidad + presa.Pos < caminos[presa.Actual][destino].Count - 1)
+            if(presa.Actual == Presa.Objetivo)
+            {
+                return;
+            }
+            if (presa.Velocidad + presa.Pos < caminos[presa.Actual][presa.Siguiente].Count - 1)
             {
                 selectedImage.BackgroundImage = originalImage;
                 selectedImage.BackgroundImageLayout = ImageLayout.Zoom; //Para que encuadre
-                DibujarCirculo(caminos[presa.Actual][destino][presa.Pos].Item1, caminos[presa.Actual][destino][presa.Pos].Item2, bmp, 40, presa.ColorEntidad);
+                DibujarCirculo(caminos[presa.Actual][presa.Siguiente][presa.Pos].Item1, caminos[presa.Actual][presa.Siguiente][presa.Pos].Item2, bmp, 40, presa.ColorEntidad);
                 presa.Pos += presa.Velocidad;
-                return true;
             }
             else
             {
-                DibujarCirculo(caminos[presa.Actual][destino][caminos[presa.Actual][destino].Count - 1].Item1, caminos[presa.Actual][destino][caminos[presa.Actual][destino].Count - 1].Item2, bmp, 40, presa.ColorEntidad);
+                DibujarCirculo(caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item1, caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item2, bmp, 40, presa.ColorEntidad);
                 presa.Pos = 0;
-                return false;
+                presa.Actual = presa.Siguiente;
+                presa.NuevoDestino();
             }
         }
 

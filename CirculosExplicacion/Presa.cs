@@ -6,6 +6,8 @@ namespace CirculosExplicacion
 {
     class Presa : EntidadBase
     {
+        private int siguiente;
+
         private int resistencia;
         private int acechadaPor; //-1 Significa que no está siendo acechada
         private Dictionary<int, List<int>> caminosMinimos;
@@ -15,6 +17,7 @@ namespace CirculosExplicacion
         public int AcechadaPor { get => acechadaPor; set => acechadaPor = value; }
         public Dictionary<int, List<int>> CaminosMinimos { get => caminosMinimos; set => caminosMinimos = value; }
         public static int Objetivo { get => objetivo; set => objetivo = value; }
+        public int Siguiente { get => siguiente; set => siguiente = value; }
 
         public static void Inicializar(double[,] matriz)
         {
@@ -32,6 +35,18 @@ namespace CirculosExplicacion
             acechadaPor = -1;
             caminosMinimos = new Dictionary<int, List<int>>();
             Dijkstra();
+            NuevoDestino(); //Inicializa el primer destino
+        }
+
+        public  void NuevoDestino()
+        {
+            for (int i = 0; i <= caminosMinimos[objetivo].Count - 2; i++)
+            {
+                if(caminosMinimos[objetivo][i] == Actual)
+                {
+                    siguiente = caminosMinimos[objetivo][i + 1];
+                }
+            }
         }
 
         private void ImprimirCamino(int[] padre, int origen, List<int> camino)
