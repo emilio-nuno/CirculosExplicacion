@@ -26,15 +26,14 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
         private Grafo g;
         private Dictionary<int, Dictionary<int, List<Tuple<int, int>>>> caminos;
         private List<Presa> agentes;
-        private Objetivo señuelo;
-        private double[,] ARM;
+        private bool finSim;
 
         public Form1()
         {
             this.agentes = new List<Presa>();
             InitializeComponent();
             this.sobreescribir = false;
-            this.caminosMinimos = new Dictionary<int, List<int>>();
+            finSim = false;
         }
 
         private void botonSelect_Click(object sender, EventArgs e)
@@ -92,14 +91,6 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
-        private void DibujarArista(int idOrigen, int idDestino, Bitmap imagen, Color color)
-        {
-            using (var graphics = Graphics.FromImage(imagen))
-            {
-                graphics.DrawLine(new Pen(color, 5), centros[idOrigen].Item1, centros[idOrigen].Item2, centros[idDestino].Item1, centros[idDestino].Item2);
-            }
-        }
-
         private double[,] ConseguirMatriz()
         {
             double[,] matriz = new double[conexiones.Count, conexiones.Count];
@@ -118,21 +109,40 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void btnDijkstra_Click(object sender, EventArgs e)
         {
-            Presa p = new Presa(1, 2, 3, 15, 0, 10, ConseguirMatriz(), Color.Red);
+            Presa p = new Presa(15, 0, 10, ConseguirMatriz(), Color.Red);
+            using(Bitmap bmp = new Bitmap(originalImage))
+            {
+                    foreach (int paso in p.CaminosMinimos[0])
+                    {
+                        if (paso != p.Actual)
+                        {
+                            while(Caminar(p, paso, bmp))
+                            {
+                                selectedImage.Image = bmp;
+                                selectedImage.Refresh();
+                                Thread.Sleep(1);
+                            }
+                            p.Actual = paso;
+                        }
+                    }
+            }
         }
 
-        private void Caminar(int origen, int destino, Bitmap bmp)
+        private bool Caminar(Presa presa, int destino, Bitmap bmp)
         {
-            int pos = 0;
-            while (pos + 10 < caminos[origen][destino].Count - 1)
+            if (presa.Velocidad + presa.Pos < caminos[presa.Actual][destino].Count - 1)
             {
                 selectedImage.BackgroundImage = originalImage;
                 selectedImage.BackgroundImageLayout = ImageLayout.Zoom; //Para que encuadre
-                DibujarCirculo(caminos[origen][destino][pos].Item1, caminos[origen][destino][pos].Item2, bmp, 40, Color.Blue);
-                selectedImage.Image = bmp;
-                selectedImage.Refresh();
-                Thread.Sleep(1);
-                pos += 10;
+                DibujarCirculo(caminos[presa.Actual][destino][presa.Pos].Item1, caminos[presa.Actual][destino][presa.Pos].Item2, bmp, 40, presa.ColorEntidad);
+                presa.Pos += presa.Velocidad;
+                return true;
+            }
+            else
+            {
+                DibujarCirculo(caminos[presa.Actual][destino][caminos[presa.Actual][destino].Count - 1].Item1, caminos[presa.Actual][destino][caminos[presa.Actual][destino].Count - 1].Item2, bmp, 40, presa.ColorEntidad);
+                presa.Pos = 0;
+                return false;
             }
         }
 
