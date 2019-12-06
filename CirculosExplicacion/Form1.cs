@@ -16,21 +16,19 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
     public partial class Form1 : Form
     {//Usar listbox
-        private Dictionary<int, List<int>> caminosMinimos; //Mover a local para poder reiniciar correctamente
         private Bitmap originalImage;
-        private Bitmap imagenEditar;
         private Dictionary<int, Tuple<int, int, int>> centros;
         private Dictionary<int, List<Dictionary<int, VerticeConectado>>> conexiones; //Does not have to be list of dicts
         private bool sobreescribir;
         private Circle primera;
         private Grafo g;
         private Dictionary<int, Dictionary<int, List<Tuple<int, int>>>> caminos;
-        private List<Presa> agentes;
+        private List<Presa> presas;
         private bool finSim;
 
         public Form1()
         {
-            this.agentes = new List<Presa>();
+            this.presas = new List<Presa>();
             InitializeComponent();
             this.sobreescribir = false;
             finSim = false;
@@ -58,12 +56,24 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             conexiones = g.conexiones;
             caminos = g.caminos;
             selectedImage.Refresh();
-            imagenEditar = new Bitmap(originalImage);
             originalImage.Save("C:\\Users\\super\\Pictures\\new.png", System.Drawing.Imaging.ImageFormat.Png);
             if (sobreescribir)
             {
                 nodosConectados.Nodes.Clear();
             }
+
+            for (int i = 0; i < conexiones.Count; i++)
+            {
+                nodosConectados.Nodes.Add(i.ToString());
+                foreach (Dictionary<int, VerticeConectado> lista in conexiones[i])
+                {
+                    foreach (int id in lista.Keys)
+                    {
+                        nodosConectados.Nodes[i].Nodes.Add(id.ToString());
+                    }
+                }
+            }
+            Presa.Inicializar(ConseguirMatriz());
             sobreescribir = true;
         }
 
@@ -74,12 +84,12 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void origenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //agentes.Add(new Presa(centros[Int32.Parse(nodosConectados.SelectedNode.Text)].Item1, centros[Int32.Parse(nodosConectados.SelectedNode.Text)].Item2, 50, Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), Color.Transparent)); //Agregar color manual
+            presas.Add(new Presa(Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), 10, Color.Red)); //Agregar color manual
         }
 
         private void destinoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //señuelo = new Objetivo(centros[Int32.Parse(nodosConectados.SelectedNode.Text)].Item1, centros[Int32.Parse(nodosConectados.SelectedNode.Text)].Item2, Int32.Parse(nodosConectados.SelectedNode.Text));
+            Presa.Objetivo = Int32.Parse(nodosConectados.SelectedNode.Text);
         }
 
         private void DibujarCirculo(int x, int y, Bitmap bmp, int radio, Color color)
@@ -109,22 +119,24 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void btnDijkstra_Click(object sender, EventArgs e)
         {
-            Presa p = new Presa(15, 0, 10, ConseguirMatriz(), Color.Red);
-            using(Bitmap bmp = new Bitmap(originalImage))
+            Presa p = new Presa(15, 15, 10, Color.Red);
+            Presa p2 = new Presa(1, 1, 10, Color.Red);
+
+            using (Bitmap bmp = new Bitmap(originalImage))
             {
+                while (!finSim){
                     foreach (int paso in p.CaminosMinimos[0])
                     {
                         if (paso != p.Actual)
                         {
-                            while(Caminar(p, paso, bmp))
-                            {
-                                selectedImage.Image = bmp;
-                                selectedImage.Refresh();
-                                Thread.Sleep(1);
-                            }
+                            Caminar(p, paso, bmp);
+;                            selectedImage.Image = bmp;
+                            selectedImage.Refresh();
+                            Thread.Sleep(1);
                             p.Actual = paso;
                         }
                     }
+                }
             }
         }
 

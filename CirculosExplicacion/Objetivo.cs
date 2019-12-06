@@ -6,19 +6,11 @@ using System.Threading.Tasks;
 
 namespace CirculosExplicacion
 {
-    class Objetivo
+    class Objetivo : EntidadBase
     {
-        private int x, y, actual;
-
-        public int X { get => x; set => x = value; }
-        public int Y { get => y; set => y = value; }
-        public int Actual { get => actual; set => actual = value; }
-
-        public Objetivo(int x, int y, int actual)
+        public Objetivo(int actual)
         {
-            this.x = x;
-            this.y = y;
-            this.Actual = actual;
+            Actual = actual;
         }
     }
 }

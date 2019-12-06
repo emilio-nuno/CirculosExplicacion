@@ -6,15 +6,22 @@ namespace CirculosExplicacion
 {
     class Presa : EntidadBase
     {
-        private int resistencia; //Actual contiene el vértice en el que se encuentra el agente luego de caminar
+        private int resistencia;
         private int acechadaPor; //-1 Significa que no está siendo acechada
         private Dictionary<int, List<int>> caminosMinimos;
-        private double[,] matrizAdy;
+        private static double[,] matrizAdy;
+        private static int objetivo;
 
         public int AcechadaPor { get => acechadaPor; set => acechadaPor = value; }
         public Dictionary<int, List<int>> CaminosMinimos { get => caminosMinimos; set => caminosMinimos = value; }
+        public static int Objetivo { get => objetivo; set => objetivo = value; }
 
-        public Presa(int actual, int inicial, int velocidad, double[,] matriz, Color color)
+        public static void Inicializar(double[,] matriz)
+        {
+            matrizAdy = matriz;
+        }
+
+        public Presa(int actual, int inicial, int velocidad, Color color)
         {
             Actual = actual;
             Inicial = inicial;
@@ -22,7 +29,6 @@ namespace CirculosExplicacion
             ColorEntidad = color;
 
             resistencia = 1;
-            matrizAdy = matriz;
             acechadaPor = -1;
             caminosMinimos = new Dictionary<int, List<int>>();
             Dijkstra();
