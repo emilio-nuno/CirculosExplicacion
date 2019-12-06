@@ -49,6 +49,11 @@ namespace CirculosExplicacion
             }
         }
 
+        public void Recalcular()
+        {
+            Dijkstra();
+        }
+
         private void ImprimirCamino(int[] padre, int origen, List<int> camino)
         {
             if (padre[origen] == -1)

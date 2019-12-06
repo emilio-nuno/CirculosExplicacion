@@ -92,12 +92,13 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             Presa.Objetivo = Int32.Parse(nodosConectados.SelectedNode.Text);
         }
 
-        private void DibujarCirculo(int x, int y, Bitmap bmp, int radio, Color color)
+        private void DibujarPresa(int x, int y, Bitmap bmp, int radio, Color color)
         {
             using (var graphics = Graphics.FromImage(bmp))
             {
                 graphics.Clear(Color.Transparent);
                 graphics.FillEllipse(new SolidBrush(color), x - (radio / 2), y - (radio / 2), radio, radio);
+                graphics.DrawString("Soy una presa", new Font("Arial", 16), new SolidBrush(Color.Black), x + 10, y + 10);
             }
         }
 
@@ -117,12 +118,21 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             return matriz;
         }
 
+        private void ReiniciarSim()
+        {
+            foreach (Presa presa in presas)
+            {
+                presa.Recalcular();
+                presa.NuevoDestino();
+            }
+        }
+
         private void btnDijkstra_Click(object sender, EventArgs e)
         {
             using (Bitmap bmp = new Bitmap(originalImage))
             {
                 while (!finSim){
-                    foreach(Presa pTemporal in presas)
+                    foreach (Presa pTemporal in presas)
                     {
                         Caminar(pTemporal, bmp);
                         selectedImage.Image = bmp;
@@ -133,22 +143,30 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
+        private void ObjetivoAleatorio()
+        {
+            Random rnd = new Random();
+            Presa.Objetivo = rnd.Next(0, centros.Count);
+        }
+
         private void Caminar(Presa presa, Bitmap bmp)
         {
             if(presa.Actual == Presa.Objetivo)
             {
+                ObjetivoAleatorio();
+                ReiniciarSim();
                 return;
             }
             if (presa.Velocidad + presa.Pos < caminos[presa.Actual][presa.Siguiente].Count - 1)
             {
                 selectedImage.BackgroundImage = originalImage;
                 selectedImage.BackgroundImageLayout = ImageLayout.Zoom; //Para que encuadre
-                DibujarCirculo(caminos[presa.Actual][presa.Siguiente][presa.Pos].Item1, caminos[presa.Actual][presa.Siguiente][presa.Pos].Item2, bmp, 40, presa.ColorEntidad);
+                DibujarPresa(caminos[presa.Actual][presa.Siguiente][presa.Pos].Item1, caminos[presa.Actual][presa.Siguiente][presa.Pos].Item2, bmp, 40, presa.ColorEntidad);
                 presa.Pos += presa.Velocidad;
             }
             else
             {
-                DibujarCirculo(caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item1, caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item2, bmp, 40, presa.ColorEntidad);
+                DibujarPresa(caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item1, caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item2, bmp, 40, presa.ColorEntidad);
                 presa.Pos = 0;
                 presa.Actual = presa.Siguiente;
                 presa.NuevoDestino();
