@@ -113,6 +113,7 @@ namespace CirculosExplicacion
         public void AccionEvasiva()
         {
             Console.WriteLine("He tomado una accion evasiva");
+            Dijkstra();
         }
 
         private void Morir()

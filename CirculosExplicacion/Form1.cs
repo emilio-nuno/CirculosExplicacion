@@ -118,8 +118,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void btnDijkstra_Click(object sender, EventArgs e)
         {
-            Presa p = new Presa(1, 2, 3, 1, 0, 10, ConseguirMatriz(), Color.Red);
-            Console.WriteLine();
+            Presa p = new Presa(1, 2, 3, 15, 0, 10, ConseguirMatriz(), Color.Red);
         }
 
         private void Caminar(int origen, int destino, Bitmap bmp)
