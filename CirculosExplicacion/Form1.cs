@@ -84,12 +84,12 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void origenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            presas.Add(new Presa(Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), 10, Color.Red)); //Agregar color manual
+            presas.Add(new Presa(Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), Presa.ObjetivoGlobal,10, Color.Red)); //Agregar color manual
         }
 
         private void destinoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Presa.Objetivo = Int32.Parse(nodosConectados.SelectedNode.Text);
+            Presa.ObjetivoGlobal = Int32.Parse(nodosConectados.SelectedNode.Text);
         }
 
         private void DibujarPresa(Presa presa, Bitmap bmp, int radio, Color color)
@@ -118,15 +118,6 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             return matriz;
         }
 
-        private void ReiniciarSim()
-        {
-            foreach (Presa presa in presas)
-            {
-                presa.Recalcular();
-                presa.NuevoDestino();
-            }
-        }
-
         private void btnDijkstra_Click(object sender, EventArgs e)
         {
             using (Bitmap bmp = new Bitmap(originalImage))
@@ -143,41 +134,54 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
-        private void ObjetivoAleatorio()
+        private void ObjetivoAleatorio(Presa presa)
         {
             Random rnd = new Random();
-            Presa.Objetivo = rnd.Next(0, centros.Count);
+            int intentoObjetivo = rnd.Next(0, centros.Count);
+            while(intentoObjetivo == presa.Actual)
+            {
+                intentoObjetivo = rnd.Next(0, centros.Count);
+            }
+            Presa.ObjetivoGlobal = intentoObjetivo;
         }
 
         private void Caminar(Presa presa, Bitmap bmp)
         {
-            if (presa.Actual == Presa.Objetivo)
+            if (presa.Actual == Presa.ObjetivoGlobal)
             {
                 presa.GanarVida();
-                ObjetivoAleatorio();
-                ReiniciarSim();
+                ObjetivoAleatorio(presa);
+                presa.ObjetivoLocal = Presa.ObjetivoGlobal;
+                presa.Recalcular();
+                presa.NuevoDestino();
                 return;
             }
-            else
+            if (presa.Velocidad + presa.Pos < caminos[presa.Actual][presa.Siguiente].Count - 1)
             {
                 presa.X = caminos[presa.Actual][presa.Siguiente][presa.Pos].Item1;
                 presa.Y = caminos[presa.Actual][presa.Siguiente][presa.Pos].Item2;
-                if (presa.Velocidad + presa.Pos < caminos[presa.Actual][presa.Siguiente].Count - 1)
+                selectedImage.BackgroundImage = originalImage;
+                selectedImage.BackgroundImageLayout = ImageLayout.Zoom; //Para que encuadre
+                DibujarPresa(presa, bmp, 40, presa.ColorEntidad);
+                presa.Pos += presa.Velocidad;
+            }
+            else
+            {
+                presa.X = caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item1;
+                presa.Y = caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item2;
+                DibujarPresa(presa, bmp, 40, presa.ColorEntidad);
+                if(presa.ObjetivoLocal != Presa.ObjetivoGlobal)
                 {
-                    selectedImage.BackgroundImage = originalImage;
-                    selectedImage.BackgroundImageLayout = ImageLayout.Zoom; //Para que encuadre
-                    DibujarPresa(presa, bmp, 40, presa.ColorEntidad);
-                    presa.Pos += presa.Velocidad;
-                }
-                else
-                {
-                    presa.X = caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item1;
-                    presa.Y = caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item2;
-                    DibujarPresa(presa, bmp, 40, presa.ColorEntidad);
                     presa.Pos = 0;
                     presa.Actual = presa.Siguiente;
+                    presa.ObjetivoLocal = Presa.ObjetivoGlobal;
+                    presa.Recalcular();
                     presa.NuevoDestino();
+                    return;
                 }
+                presa.Pos = 0;
+                presa.Actual = presa.Siguiente;
+                presa.NuevoDestino();
             }
         }
 

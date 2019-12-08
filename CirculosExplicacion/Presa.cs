@@ -12,26 +12,29 @@ namespace CirculosExplicacion
         private int acechadaPor; //-1 Significa que no está siendo acechada
         private Dictionary<int, List<int>> caminosMinimos;
         private static double[,] matrizAdy;
-        private static int objetivo;
+        private static int objetivoGlobal;
+        private int objetivoLocal;
 
         public int AcechadaPor { get => acechadaPor; set => acechadaPor = value; }
         public Dictionary<int, List<int>> CaminosMinimos { get => caminosMinimos; set => caminosMinimos = value; }
-        public static int Objetivo { get => objetivo; set => objetivo = value; }
+        public static int ObjetivoGlobal { get => objetivoGlobal; set => objetivoGlobal = value; } //Cambiar propiedad
         public int Siguiente { get => siguiente; set => siguiente = value; }
         public int Resistencia { get => resistencia; private set => resistencia = value; }
+        public int ObjetivoLocal { get => objetivoLocal; set => objetivoLocal = value; }
 
         public static void Inicializar(double[,] matriz)
         {
             matrizAdy = matriz;
         }
 
-        public Presa(int actual, int inicial, int velocidad, Color color)
+        public Presa(int actual, int inicial, int global, int velocidad, Color color)
         {
             Actual = actual;
             Inicial = inicial;
             Velocidad = velocidad;
             ColorEntidad = color;
 
+            objetivoLocal = global;
             Resistencia = 1;
             acechadaPor = -1;
             caminosMinimos = new Dictionary<int, List<int>>();
@@ -41,11 +44,11 @@ namespace CirculosExplicacion
 
         public  void NuevoDestino()
         {
-            for (int i = 0; i <= caminosMinimos[objetivo].Count - 2; i++)
+            for (int i = 0; i <= caminosMinimos[objetivoLocal].Count - 2; i++)
             {
-                if(caminosMinimos[objetivo][i] == Actual)
+                if(caminosMinimos[objetivoLocal][i] == Actual)
                 {
-                    siguiente = caminosMinimos[objetivo][i + 1];
+                    siguiente = caminosMinimos[objetivoLocal][i + 1];
                 }
             }
         }
