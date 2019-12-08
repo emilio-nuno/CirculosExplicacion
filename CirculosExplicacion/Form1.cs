@@ -25,6 +25,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
         private Dictionary<int, Dictionary<int, List<Tuple<int, int>>>> caminos;
         private List<Presa> presas;
         private bool finSim;
+        private List<int> verticesActuales;
 
         public Form1()
         {
@@ -32,6 +33,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             InitializeComponent();
             this.sobreescribir = false;
             finSim = false;
+            verticesActuales = new List<int>();
         }
 
         private void botonSelect_Click(object sender, EventArgs e)
@@ -134,11 +136,16 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
-        private void ObjetivoAleatorio(Presa presa)
+        private void ObjetivoAleatorio() //Actualizar a que el nuevo objetivo aparezca en un nodo aleatorio en el cual no se encuentre ningún vértice
         {
+            verticesActuales.Clear();
             Random rnd = new Random();
             int intentoObjetivo = rnd.Next(0, centros.Count);
-            while(intentoObjetivo == presa.Actual)
+            foreach (Presa presa in presas)
+            {
+                verticesActuales.Add(presa.Actual);
+            }
+            while (verticesActuales.Contains(intentoObjetivo))
             {
                 intentoObjetivo = rnd.Next(0, centros.Count);
             }
@@ -147,10 +154,13 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void Caminar(Presa presa, Bitmap bmp)
         {
-            if (presa.Actual == Presa.ObjetivoGlobal)
+            if (presa.Actual == presa.ObjetivoLocal)
             {
-                presa.GanarVida();
-                ObjetivoAleatorio(presa);
+                if(presa.ObjetivoLocal == Presa.ObjetivoGlobal)
+                {
+                    presa.GanarVida();
+                    ObjetivoAleatorio();
+                }
                 presa.ObjetivoLocal = Presa.ObjetivoGlobal;
                 presa.Recalcular();
                 presa.NuevoDestino();
@@ -174,10 +184,19 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 {
                     presa.Pos = 0;
                     presa.Actual = presa.Siguiente;
-                    presa.ObjetivoLocal = Presa.ObjetivoGlobal;
-                    presa.Recalcular();
-                    presa.NuevoDestino();
-                    return;
+                    if(presa.Actual == Presa.ObjetivoGlobal)
+                    {
+                        presa.GanarVida();
+                        ObjetivoAleatorio();
+                        presa.ObjetivoLocal = Presa.ObjetivoGlobal;
+                        presa.Recalcular();
+                        presa.NuevoDestino();
+                    }
+                    if(presa.ObjetivoLocal != Presa.ObjetivoGlobal)
+                    {
+
+                    }
+                  
                 }
                 presa.Pos = 0;
                 presa.Actual = presa.Siguiente;
