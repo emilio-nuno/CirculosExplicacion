@@ -86,7 +86,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void origenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            presas.Add(new Presa(Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), Presa.ObjetivoGlobal,10, Color.Red)); //Agregar color manual
+            presas.Add(new Presa(Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), Presa.ObjetivoGlobal, 10, Color.Red)); //Agregar color manual
         }
 
         private void destinoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -154,18 +154,6 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void Caminar(Presa presa, Bitmap bmp)
         {
-            if (presa.Actual == presa.ObjetivoLocal)
-            {
-                if(presa.ObjetivoLocal == Presa.ObjetivoGlobal)
-                {
-                    presa.GanarVida();
-                    ObjetivoAleatorio();
-                }
-                presa.ObjetivoLocal = Presa.ObjetivoGlobal;
-                presa.Recalcular();
-                presa.NuevoDestino();
-                return;
-            }
             if (presa.Velocidad + presa.Pos < caminos[presa.Actual][presa.Siguiente].Count - 1)
             {
                 presa.X = caminos[presa.Actual][presa.Siguiente][presa.Pos].Item1;
@@ -180,26 +168,36 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 presa.X = caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item1;
                 presa.Y = caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item2;
                 DibujarPresa(presa, bmp, 40, presa.ColorEntidad);
-                if(presa.ObjetivoLocal != Presa.ObjetivoGlobal)
+                presa.Pos = 0;
+                presa.Actual = presa.Siguiente;
+
+                if(presa.Actual == presa.ObjetivoLocal)
                 {
-                    presa.Pos = 0;
-                    presa.Actual = presa.Siguiente;
-                    if(presa.Actual == Presa.ObjetivoGlobal)
-                    {
+                    if(presa.Actual == Presa.ObjetivoGlobal){
                         presa.GanarVida();
                         ObjetivoAleatorio();
                         presa.ObjetivoLocal = Presa.ObjetivoGlobal;
                         presa.Recalcular();
                         presa.NuevoDestino();
+                        return;
                     }
-                    if(presa.ObjetivoLocal != Presa.ObjetivoGlobal)
+                    else
                     {
-
+                        presa.ObjetivoLocal = Presa.ObjetivoGlobal;
+                        presa.Recalcular();
+                        presa.NuevoDestino();
+                        return;
                     }
-                  
                 }
-                presa.Pos = 0;
-                presa.Actual = presa.Siguiente;
+
+                if (presa.ObjetivoLocal != Presa.ObjetivoGlobal && Presa.ObjetivoGlobal != presa.Actual)
+                {
+                    presa.ObjetivoLocal = Presa.ObjetivoGlobal;
+                    presa.Recalcular();
+                    presa.NuevoDestino();
+                    return;
+                }
+
                 presa.NuevoDestino();
             }
         }
