@@ -14,6 +14,7 @@ namespace CirculosExplicacion
         private static double[,] matrizAdy;
         private static int objetivoGlobal;
         private int objetivoLocal;
+        private bool muerto;
 
         public int AcechadaPor { get => acechadaPor; set => acechadaPor = value; }
         public Dictionary<int, List<int>> CaminosMinimos { get => caminosMinimos; set => caminosMinimos = value; }
@@ -21,6 +22,7 @@ namespace CirculosExplicacion
         public int Siguiente { get => siguiente; set => siguiente = value; }
         public int Resistencia { get => resistencia; private set => resistencia = value; }
         public int ObjetivoLocal { get => objetivoLocal; set => objetivoLocal = value; }
+        public bool Muerto { get => muerto; private set => muerto = value; }
 
         public static void Inicializar(double[,] matriz)
         {
@@ -34,6 +36,7 @@ namespace CirculosExplicacion
             Velocidad = velocidad;
             ColorEntidad = color;
 
+            Muerto = false;
             objetivoLocal = global;
             Resistencia = 1;
             acechadaPor = -1;
@@ -145,12 +148,12 @@ namespace CirculosExplicacion
 
         private void Morir()
         {
-            Console.WriteLine("He muerto...");
+            Muerto = true;
         }
 
         public void PerderVida()
         {
-            if(Resistencia > 0)
+            if(Resistencia - 1 > 0)
             {
                 Resistencia -= 1;
             }

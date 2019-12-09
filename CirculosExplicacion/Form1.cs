@@ -127,10 +127,13 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 while (!finSim){
                     foreach (Presa pTemporal in presas)
                     {
-                        Caminar(pTemporal, bmp);
-                        selectedImage.Image = bmp;
-                        selectedImage.Refresh();
-                        Thread.Sleep(1);
+                        if (!pTemporal.Muerto)
+                        {
+                            Caminar(pTemporal, bmp);
+                            selectedImage.Image = bmp;
+                            selectedImage.Refresh();
+                            Thread.Sleep(1);
+                        }
                     }
                 }
             }
