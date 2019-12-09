@@ -24,12 +24,14 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
         private Grafo g;
         private Dictionary<int, Dictionary<int, List<Tuple<int, int>>>> caminos;
         private List<Presa> presas;
+        private List<Depredador> depredadores;
         private bool finSim;
         private List<int> verticesActuales;
 
         public Form1()
         {
             this.presas = new List<Presa>();
+            this.depredadores = new List<Depredador>();
             InitializeComponent();
             this.sobreescribir = false;
             finSim = false;
@@ -91,7 +93,11 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void destinoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Presa.ObjetivoGlobal = Int32.Parse(nodosConectados.SelectedNode.Text);
+            Depredador dTemp = new Depredador(Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), 100, 10, Color.Blue);
+            dTemp.Siguiente = DestinoAleatorio(dTemp); //Le damos un primer destino, como a la presa
+            //TODO: VERIFICAR CONEXION
+            depredadores.Add(dTemp);
+            //Presa.ObjetivoGlobal = Int32.Parse(nodosConectados.SelectedNode.Text); //Cambiar esto a otro lugar
         }
 
         private void DibujarPresa(Presa presa, Bitmap bmp, int radio, Color color)
@@ -101,6 +107,16 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 graphics.Clear(Color.Transparent);
                 graphics.FillEllipse(new SolidBrush(color), presa.X - (radio / 2), presa.Y - (radio / 2), radio, radio);
                 graphics.DrawString(presa.Resistencia.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), presa.X + 10, presa.Y + 10);
+            }
+        }
+
+        private void DibujarDepredador(Depredador depredador, Bitmap bmp, int radio, Color color)
+        {
+            using (var graphics = Graphics.FromImage(bmp))
+            {
+                graphics.Clear(Color.Transparent);
+                graphics.FillEllipse(new SolidBrush(color), depredador.X - (radio / 2), depredador.Y - (radio / 2), radio, radio);
+                graphics.DrawEllipse(new Pen(depredador.ColorRadio), depredador.X - (depredador.RadioDepredador / 2), depredador.Y - (depredador.RadioDepredador / 2), depredador.RadioDepredador, depredador.RadioDepredador); //Hacer esto opcional
             }
         }
 
@@ -125,15 +141,22 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             using (Bitmap bmp = new Bitmap(originalImage))
             {
                 while (!finSim){
-                    foreach (Presa pTemporal in presas)
+                    /*foreach (Presa pTemporal in presas)
                     {
                         if (!pTemporal.Muerto)
                         {
-                            Caminar(pTemporal, bmp);
+                            CaminarPresa(pTemporal, bmp);
                             selectedImage.Image = bmp;
                             selectedImage.Refresh();
                             Thread.Sleep(1);
                         }
+                    }*/
+                    foreach (Depredador dTemporal in depredadores)
+                    {
+                        CaminarDepredador(dTemporal, bmp);
+                        selectedImage.Image = bmp;
+                        selectedImage.Refresh();
+                        Thread.Sleep(1);
                     }
                 }
             }
@@ -155,7 +178,43 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             Presa.ObjetivoGlobal = intentoObjetivo;
         }
 
-        private void Caminar(Presa presa, Bitmap bmp)
+        private int DestinoAleatorio(Depredador depredador) //Actualizar a que el nuevo objetivo aparezca en un nodo aleatorio en el cual no se encuentre ningún vértice
+        {
+            Random rnd = new Random();
+            int intentoDestino = rnd.Next(0, centros.Count);
+            while (intentoDestino == depredador.Actual)
+            {
+                intentoDestino = rnd.Next(0, centros.Count);
+            }
+            return intentoDestino;
+        }
+
+        private void CaminarDepredador(Depredador depredador, Bitmap bmp)
+        {
+            if(depredador.Velocidad + depredador.Pos < caminos[depredador.Actual][depredador.Siguiente].Count - 1)
+            {
+                depredador.X = caminos[depredador.Actual][depredador.Siguiente][depredador.Pos].Item1;
+                depredador.Y = caminos[depredador.Actual][depredador.Siguiente][depredador.Pos].Item2;
+                selectedImage.BackgroundImage = originalImage;
+                selectedImage.BackgroundImageLayout = ImageLayout.Zoom;
+                DibujarDepredador(depredador, bmp, 40, depredador.ColorEntidad);
+                depredador.Pos += depredador.Velocidad;
+            }
+            else
+            {
+                depredador.X = caminos[depredador.Actual][depredador.Siguiente][caminos[depredador.Actual][depredador.Siguiente].Count - 1].Item1;
+                depredador.Y = caminos[depredador.Actual][depredador.Siguiente][caminos[depredador.Actual][depredador.Siguiente].Count - 1].Item2;
+                DibujarDepredador(depredador, bmp, 40, depredador.ColorEntidad);
+                depredador.Pos = 0;
+                depredador.Actual = depredador.Siguiente;
+                if(depredador.PresaAcechada == null)
+                {
+                    depredador.Siguiente = DestinoAleatorio(depredador);
+                }
+            }
+        }
+
+        private void CaminarPresa(Presa presa, Bitmap bmp)
         {
             if (presa.Velocidad + presa.Pos < caminos[presa.Actual][presa.Siguiente].Count - 1)
             {

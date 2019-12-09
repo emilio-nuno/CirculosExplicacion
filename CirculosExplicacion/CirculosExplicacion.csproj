@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Depredador.cs" />
     <Compile Include="EntidadBase.cs" />
     <Compile Include="Grafo.cs" />
     <Compile Include="Circulo.cs" />

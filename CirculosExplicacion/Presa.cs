@@ -9,20 +9,20 @@ namespace CirculosExplicacion
         private int siguiente;
 
         private int resistencia;
-        private int acechadaPor; //-1 Significa que no está siendo acechada
+        private Depredador acechadaPor;
         private Dictionary<int, List<int>> caminosMinimos;
         private static double[,] matrizAdy;
         private static int objetivoGlobal;
         private int objetivoLocal;
         private bool muerto;
 
-        public int AcechadaPor { get => acechadaPor; set => acechadaPor = value; }
         public Dictionary<int, List<int>> CaminosMinimos { get => caminosMinimos; set => caminosMinimos = value; }
         public static int ObjetivoGlobal { get => objetivoGlobal; set => objetivoGlobal = value; } //Cambiar propiedad
         public int Siguiente { get => siguiente; set => siguiente = value; }
         public int Resistencia { get => resistencia; private set => resistencia = value; }
         public int ObjetivoLocal { get => objetivoLocal; set => objetivoLocal = value; }
         public bool Muerto { get => muerto; private set => muerto = value; }
+        public Depredador AcechadaPor { get => acechadaPor; set => acechadaPor = value; }
 
         public static void Inicializar(double[,] matriz)
         {
@@ -36,10 +36,10 @@ namespace CirculosExplicacion
             Velocidad = velocidad;
             ColorEntidad = color;
 
+            acechadaPor = null;
             Muerto = false;
             objetivoLocal = global;
             Resistencia = 1;
-            acechadaPor = -1;
             caminosMinimos = new Dictionary<int, List<int>>();
             Dijkstra();
             NuevoDestino(); //Inicializa el primer destino
