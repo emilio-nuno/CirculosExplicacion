@@ -217,9 +217,9 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
                         foreach (Presa presa in presas)
                         {
-                            if (dTemporal.VerificarRango(presa))
+                            if (dTemporal.VerificarRango(presa) && presa.AcechadaPor == null) //Para verificar que no están siendo cazadas, hay error de referencias no eliminadas
                             {
-                                if(mejorPresa == null)
+                                if(mejorPresa == null) 
                                 {
                                     mejorPresa = presa;
                                 }
@@ -232,10 +232,24 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                                 }
                             }
                         }
-                        if(mejorPresa != null && !mejorPresa.Muerto)
+                        if(dTemporal.PresaAcechada == null)
                         {
-                            mejorPresa.AcechadaPor = dTemporal;
-                            dTemporal.PresaAcechada = mejorPresa;
+                            if (mejorPresa != null && !mejorPresa.Muerto)
+                            {
+                                mejorPresa.AcechadaPor = dTemporal;
+                                dTemporal.PresaAcechada = mejorPresa;
+                            }
+                        }
+                        else if(dTemporal.PresaAcechada != null)
+                        {
+                            if (mejorPresa != null && !mejorPresa.Muerto)
+                            {
+                                dTemporal.PresaAcechada.AcechadaPor = null; //Removemos la referencia anterior
+                                dTemporal.PresaAcechada = null;
+
+                                mejorPresa.AcechadaPor = dTemporal;
+                                dTemporal.PresaAcechada = mejorPresa;
+                            }
                         }
                     }
                 }
