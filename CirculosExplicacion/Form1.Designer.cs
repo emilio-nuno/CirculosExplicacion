@@ -118,14 +118,14 @@
             // 
             this.origenToolStripMenuItem.Name = "origenToolStripMenuItem";
             this.origenToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
-            this.origenToolStripMenuItem.Text = "Origen";
+            this.origenToolStripMenuItem.Text = "Presa";
             this.origenToolStripMenuItem.Click += new System.EventHandler(this.origenToolStripMenuItem_Click);
             // 
             // destinoToolStripMenuItem
             // 
             this.destinoToolStripMenuItem.Name = "destinoToolStripMenuItem";
             this.destinoToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
-            this.destinoToolStripMenuItem.Text = "Destino";
+            this.destinoToolStripMenuItem.Text = "Depredador";
             this.destinoToolStripMenuItem.Click += new System.EventHandler(this.destinoToolStripMenuItem_Click);
             // 
             // botonConectar

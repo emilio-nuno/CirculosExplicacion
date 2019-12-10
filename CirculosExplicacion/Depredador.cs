@@ -22,19 +22,24 @@ namespace CirculosExplicacion
             presaAcechada = null;
         }
 
-        private double DistanciaEuclideana(Presa objetivo)
+        public bool Colision()
         {
-            return Math.Sqrt(Math.Pow(objetivo.X - X, 2) + Math.Pow(objetivo.Y - Y, 2));
+            return DistanciaEuclideana() < Tamaño;
         }
 
-        public int FactorVelocidad(Presa objetivo)
+        private double DistanciaEuclideana()
         {
-            return radioDepredador - Convert.ToInt32(DistanciaEuclideana(objetivo));
+            return Math.Sqrt(Math.Pow(PresaAcechada.X - X, 2) + Math.Pow(PresaAcechada.Y - Y, 2));
         }
 
-        public bool VerificarRango(Presa objetivo)
+        public int FactorVelocidad()
         {
-            if(DistanciaEuclideana(objetivo) <= radioDepredador)
+            return RadioDepredador - Convert.ToInt32(DistanciaEuclideana());
+        }
+
+        public bool VerificarRango()
+        {
+            if(DistanciaEuclideana() < RadioDepredador)
             {
                 return true;
             }
