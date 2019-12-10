@@ -101,7 +101,6 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
         {
             Depredador dTemp = new Depredador(Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), 100, 10, Color.Blue);
             dTemp.Siguiente = DestinoAleatorio(dTemp); //Le damos un primer destino, como a l
-            dTemp.PresaAcechada = presas[0];
             depredadores.Add(dTemp);
         }
 
@@ -158,10 +157,40 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                     }
                     foreach (Depredador dTemporal in depredadores)
                     {
+                        Presa mejorPresa = null;
+                        if(dTemporal.PresaAcechada != null)
+                        {
+                            CaminarDepredador(dTemporal, bmp, dTemporal.FactorVelocidad(dTemporal.PresaAcechada));
+                        }
+                        else
+                        {
+                            CaminarDepredador(dTemporal, bmp);
+                        }
                         CaminarDepredador(dTemporal, bmp);
                         selectedImage.Image = bmp;
                         selectedImage.Refresh();
                         Thread.Sleep(1);
+                        foreach (Presa presa in presas)
+                        {
+                            if (dTemporal.VerificarRango(presa))
+                            {
+                                if(mejorPresa == null)
+                                {
+                                    mejorPresa = presa;
+                                }
+                                else
+                                {
+                                    if(dTemporal.DistanciaEuclideana(presa) < dTemporal.DistanciaEuclideana(mejorPresa))
+                                    {
+                                        mejorPresa = presa;
+                                    }
+                                }
+                            }
+                        }
+                        if(mejorPresa != null)
+                        {
+                            dTemporal.PresaAcechada = mejorPresa;
+                        }
                     }
                 }
             }
@@ -218,9 +247,9 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             return intentoDestino;
         }
 
-        private void CaminarDepredador(Depredador depredador, Bitmap bmp)
+        private void CaminarDepredador(Depredador depredador, Bitmap bmp, int factorVelocidad = 0)
         {
-            if(depredador.Velocidad + depredador.Pos < caminos[depredador.Actual][depredador.Siguiente].Count - 1)
+            if((depredador.Velocidad + factorVelocidad) + depredador.Pos < caminos[depredador.Actual][depredador.Siguiente].Count - 1)
             {
                 depredador.X = caminos[depredador.Actual][depredador.Siguiente][depredador.Pos].Item1;
                 depredador.Y = caminos[depredador.Actual][depredador.Siguiente][depredador.Pos].Item2;
