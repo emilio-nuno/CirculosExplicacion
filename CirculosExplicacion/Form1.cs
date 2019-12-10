@@ -99,7 +99,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void destinoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Depredador dTemp = new Depredador(Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), 100, 10, Color.Blue);
+            Depredador dTemp = new Depredador(Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), 100, 1, Color.Blue);
             dTemp.Siguiente = DestinoAleatorio(dTemp); //Le damos un primer destino, como a l
             depredadores.Add(dTemp);
         }
@@ -182,6 +182,14 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                         selectedImage.Image = bmp;
                         selectedImage.Refresh();
                         Thread.Sleep(1);
+
+                        if(dTemporal.PresaAcechada != null)
+                        {
+                            if (dTemporal.Colision(dTemporal.PresaAcechada))
+                            {
+                                dTemporal.PresaAcechada.PerderVida();
+                            }
+                        }
 
                         if(dTemporal.PresaAcechada != null && !dTemporal.VerificarRango(dTemporal.PresaAcechada))
                         {
