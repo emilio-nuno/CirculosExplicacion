@@ -116,7 +116,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             {
                 graphics.Clear(Color.Transparent);
                 graphics.FillEllipse(new SolidBrush(color), depredador.X - (radio / 2), depredador.Y - (radio / 2), radio, radio);
-                graphics.DrawEllipse(new Pen(depredador.ColorRadio), depredador.X - (depredador.RadioDepredador / 2), depredador.Y - (depredador.RadioDepredador / 2), depredador.RadioDepredador, depredador.RadioDepredador); //Hacer esto opcional
+                graphics.DrawEllipse(new Pen(depredador.ColorRadio), depredador.X - ((depredador.RadioDepredador + radio) / 2), depredador.Y - ((depredador.RadioDepredador + radio) / 2), depredador.RadioDepredador + radio, depredador.RadioDepredador + radio); //Hacer esto opcional
             }
         }
 
@@ -180,9 +180,10 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private int DestinoAleatorio(Depredador depredador) //Actualizar a que el nuevo objetivo aparezca en un nodo aleatorio en el cual no se encuentre ningún vértice
         {
+            List<int> conexionesTemp = new List<int>(caminos[depredador.Actual].Keys);
             Random rnd = new Random();
             int intentoDestino = rnd.Next(0, centros.Count);
-            while (intentoDestino == depredador.Actual)
+            while (!conexionesTemp.Contains(intentoDestino))
             {
                 intentoDestino = rnd.Next(0, centros.Count);
             }
