@@ -43,6 +43,7 @@
             this.btnBuscar = new System.Windows.Forms.Button();
             this.btnDijkstra = new System.Windows.Forms.Button();
             this.btnProbar = new System.Windows.Forms.Button();
+            this.objetivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.selectedImage)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -108,21 +109,22 @@
             this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.origenToolStripMenuItem,
-            this.destinoToolStripMenuItem});
+            this.destinoToolStripMenuItem,
+            this.objetivoToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(130, 52);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(211, 104);
             // 
             // origenToolStripMenuItem
             // 
             this.origenToolStripMenuItem.Name = "origenToolStripMenuItem";
-            this.origenToolStripMenuItem.Size = new System.Drawing.Size(129, 24);
+            this.origenToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
             this.origenToolStripMenuItem.Text = "Origen";
             this.origenToolStripMenuItem.Click += new System.EventHandler(this.origenToolStripMenuItem_Click);
             // 
             // destinoToolStripMenuItem
             // 
             this.destinoToolStripMenuItem.Name = "destinoToolStripMenuItem";
-            this.destinoToolStripMenuItem.Size = new System.Drawing.Size(129, 24);
+            this.destinoToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
             this.destinoToolStripMenuItem.Text = "Destino";
             this.destinoToolStripMenuItem.Click += new System.EventHandler(this.destinoToolStripMenuItem_Click);
             // 
@@ -173,6 +175,13 @@
             this.btnProbar.UseVisualStyleBackColor = true;
             this.btnProbar.Click += new System.EventHandler(this.btnProbar_Click);
             // 
+            // objetivoToolStripMenuItem
+            // 
+            this.objetivoToolStripMenuItem.Name = "objetivoToolStripMenuItem";
+            this.objetivoToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
+            this.objetivoToolStripMenuItem.Text = "Objetivo";
+            this.objetivoToolStripMenuItem.Click += new System.EventHandler(this.objetivoToolStripMenuItem_Click_1);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -214,5 +223,6 @@
         private System.Windows.Forms.Button btnBuscar;
         private System.Windows.Forms.Button btnDijkstra;
         private System.Windows.Forms.Button btnProbar;
+        private System.Windows.Forms.ToolStripMenuItem objetivoToolStripMenuItem;
     }
 }

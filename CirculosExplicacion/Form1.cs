@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
@@ -86,6 +87,11 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             ((TreeView)sender).SelectedNode = e.Node;
         }
 
+        private void objetivoToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            Presa.ObjetivoGlobal = Int32.Parse(nodosConectados.SelectedNode.Text);
+        }
+
         private void origenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             presas.Add(new Presa(Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), Presa.ObjetivoGlobal, 10, Color.Red)); //Agregar color manual
@@ -94,10 +100,9 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
         private void destinoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Depredador dTemp = new Depredador(Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), 100, 10, Color.Blue);
-            dTemp.Siguiente = DestinoAleatorio(dTemp); //Le damos un primer destino, como a la presa
-            //TODO: VERIFICAR CONEXION
+            dTemp.Siguiente = DestinoAleatorio(dTemp); //Le damos un primer destino, como a l
+            dTemp.PresaAcechada = presas[0];
             depredadores.Add(dTemp);
-            //Presa.ObjetivoGlobal = Int32.Parse(nodosConectados.SelectedNode.Text); //Cambiar esto a otro lugar
         }
 
         private void DibujarPresa(Presa presa, Bitmap bmp, Color color)
@@ -141,7 +146,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             using (Bitmap bmp = new Bitmap(originalImage))
             {
                 while (!finSim){
-                    /*foreach (Presa pTemporal in presas)
+                    foreach (Presa pTemporal in presas)
                     {
                         if (!pTemporal.Muerto)
                         {
@@ -150,7 +155,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                             selectedImage.Refresh();
                             Thread.Sleep(1);
                         }
-                    }*/
+                    }
                     foreach (Depredador dTemporal in depredadores)
                     {
                         CaminarDepredador(dTemporal, bmp);
@@ -180,7 +185,25 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private int DestinoAngular(Depredador depredador)
         {
-            return 0;
+            Dictionary<int, double> prioridad = new Dictionary<int, double>();
+            foreach (int id in caminos[depredador.Actual].Keys)
+            {
+                double thetaPresa = Math.Atan2((depredador.PresaAcechada.Y - caminos[depredador.Actual][id][0].Item2), (depredador.PresaAcechada.X - caminos[depredador.Actual][id][0].Item1));
+                double thetaArista = Math.Atan2((caminos[depredador.Actual][id][caminos[depredador.Actual][id].Count - 1].Item2 - caminos[depredador.Actual][id][0].Item2), (caminos[depredador.Actual][id][caminos[depredador.Actual][id].Count - 1].Item1 - caminos[depredador.Actual][id][0].Item1));
+                if ((thetaArista > Math.PI) && (thetaPresa == 0))
+                {
+                    thetaPresa = (2 * Math.PI);
+                }
+                double tempdiff = Math.Abs(thetaPresa - thetaArista);
+                prioridad.Add(id, tempdiff);
+            }
+
+            List<double> angulosOrdenados = prioridad.Values.ToList();
+            var destinoMejor = from entry in prioridad where entry.Value == angulosOrdenados.Min() select entry.Key;
+            int destinoactual = destinoMejor.FirstOrDefault();
+
+
+            return destinoactual;
         }
 
         private int DestinoAleatorio(Depredador depredador) //Actualizar a que el nuevo objetivo aparezca en un nodo aleatorio en el cual no se encuentre ningún vértice
@@ -215,7 +238,11 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 depredador.Actual = depredador.Siguiente;
                 if(depredador.PresaAcechada == null)
                 {
-                    depredador.Siguiente = DestinoAleatorio(depredador);
+                    depredador.Siguiente = DestinoAleatorio(depredador); //Caminar aleatoriamente
+                }
+                else
+                {
+                    depredador.Siguiente = DestinoAngular(depredador); //Caminar hacia uana presa
                 }
             }
         }
