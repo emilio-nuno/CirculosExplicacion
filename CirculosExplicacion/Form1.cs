@@ -232,17 +232,15 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                                 }
                             }
                         }
-                        if(dTemporal.PresaAcechada == null)
+
+                        if (mejorPresa != null && !mejorPresa.Muerto)
                         {
-                            if (mejorPresa != null && !mejorPresa.Muerto)
+                            if(dTemporal.PresaAcechada == null)
                             {
                                 mejorPresa.AcechadaPor = dTemporal;
                                 dTemporal.PresaAcechada = mejorPresa;
                             }
-                        }
-                        else if(dTemporal.PresaAcechada != null)
-                        {
-                            if (mejorPresa != null && !mejorPresa.Muerto)
+                            else
                             {
                                 dTemporal.PresaAcechada.AcechadaPor = null; //Removemos la referencia anterior
                                 dTemporal.PresaAcechada = null;
