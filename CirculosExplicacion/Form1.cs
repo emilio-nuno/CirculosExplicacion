@@ -231,7 +231,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void botonAnimar_Click(object sender, EventArgs e) //Actualmente el primer agente llega al señuelo seleccionado, y los demas llegan a un señuelo random
         {
-            //agentes[0].Color = Color.Red;
+            agentes[0].Color = Color.Red;
             //agentes[1].Color = Color.Green;
             //agentes[2].Color = Color.Pink;
             //agentes[3].Color = Color.Yellow;
