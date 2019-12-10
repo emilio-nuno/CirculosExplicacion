@@ -17,6 +17,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
     public partial class Form1 : Form
     {//Usar listbox
+     //Yellow for predator hunting and pink for hunted prey
         private Bitmap originalImage;
         private Dictionary<int, Tuple<int, int, int>> centros;
         private Dictionary<int, List<Dictionary<int, VerticeConectado>>> conexiones; //Does not have to be list of dicts
@@ -128,11 +129,23 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void DibujarDepredador(Depredador depredador, Bitmap bmp, Color color)
         {
-            using (var graphics = Graphics.FromImage(bmp))
+            if(depredador.PresaAcechada != null)
             {
-                graphics.Clear(Color.Transparent);
-                graphics.FillEllipse(new SolidBrush(color), depredador.X - (depredador.Tamaño / 2), depredador.Y - (depredador.Tamaño / 2), depredador.Tamaño, depredador.Tamaño);
-                graphics.DrawEllipse(new Pen(depredador.ColorRadio), depredador.X - ((depredador.RadioDepredador + depredador.Tamaño) / 2), depredador.Y - ((depredador.RadioDepredador + depredador.Tamaño) / 2), depredador.RadioDepredador + depredador.Tamaño, depredador.RadioDepredador + depredador.Tamaño); //Hacer esto opcional
+                using (var graphics = Graphics.FromImage(bmp))
+                {
+                    graphics.Clear(Color.Transparent);
+                    graphics.FillEllipse(new SolidBrush(Color.Yellow), depredador.X - (depredador.Tamaño / 2), depredador.Y - (depredador.Tamaño / 2), depredador.Tamaño, depredador.Tamaño);
+                    graphics.DrawEllipse(new Pen(depredador.ColorRadio), depredador.X - ((depredador.RadioDepredador + depredador.Tamaño) / 2), depredador.Y - ((depredador.RadioDepredador + depredador.Tamaño) / 2), depredador.RadioDepredador + depredador.Tamaño, depredador.RadioDepredador + depredador.Tamaño); //Hacer esto opcional
+                }
+            }
+            else
+            {
+                using (var graphics = Graphics.FromImage(bmp))
+                {
+                    graphics.Clear(Color.Transparent);
+                    graphics.FillEllipse(new SolidBrush(color), depredador.X - (depredador.Tamaño / 2), depredador.Y - (depredador.Tamaño / 2), depredador.Tamaño, depredador.Tamaño);
+                    graphics.DrawEllipse(new Pen(depredador.ColorRadio), depredador.X - ((depredador.RadioDepredador + depredador.Tamaño) / 2), depredador.Y - ((depredador.RadioDepredador + depredador.Tamaño) / 2), depredador.RadioDepredador + depredador.Tamaño, depredador.RadioDepredador + depredador.Tamaño); //Hacer esto opcional
+                }
             }
         }
 
@@ -188,6 +201,11 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                             if (dTemporal.Colision(dTemporal.PresaAcechada))
                             {
                                 dTemporal.PresaAcechada.PerderVida();
+                                if (dTemporal.PresaAcechada.Muerto)
+                                {
+                                    dTemporal.PresaAcechada.AcechadaPor = null;
+                                    dTemporal.PresaAcechada = null;
+                                }
                             }
                         }
 
