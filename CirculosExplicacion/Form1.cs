@@ -100,7 +100,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void destinoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Depredador dTemp = new Depredador(Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), 100, 1, Color.Blue);
+            Depredador dTemp = new Depredador(Int32.Parse(nodosConectados.SelectedNode.Text), Int32.Parse(nodosConectados.SelectedNode.Text), 200, 5, Color.Blue);
             dTemp.Siguiente = DestinoAleatorio(dTemp); //Le damos un primer destino, como a l
             depredadores.Add(dTemp);
         }
