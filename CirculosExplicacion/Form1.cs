@@ -106,11 +106,23 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
 
         private void DibujarPresa(Presa presa, Bitmap bmp, Color color)
         {
-            using (var graphics = Graphics.FromImage(bmp))
+            if(presa.AcechadaPor != null)
             {
-                graphics.Clear(Color.Transparent);
-                graphics.FillEllipse(new SolidBrush(color), presa.X - (presa.Tamaño / 2), presa.Y - (presa.Tamaño / 2), presa.Tamaño, presa.Tamaño);
-                graphics.DrawString(presa.Resistencia.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), presa.X + 10, presa.Y + 10);
+                using (var graphics = Graphics.FromImage(bmp)) //Checar manera más elegante de expresar esto
+                {
+                    graphics.Clear(Color.Transparent);
+                    graphics.FillEllipse(new SolidBrush(Color.Pink), presa.X - (presa.Tamaño / 2), presa.Y - (presa.Tamaño / 2), presa.Tamaño, presa.Tamaño);
+                    graphics.DrawString(presa.Resistencia.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), presa.X + 10, presa.Y + 10);
+                }
+            }
+            else
+            {
+                using (var graphics = Graphics.FromImage(bmp))
+                {
+                    graphics.Clear(Color.Transparent);
+                    graphics.FillEllipse(new SolidBrush(color), presa.X - (presa.Tamaño / 2), presa.Y - (presa.Tamaño / 2), presa.Tamaño, presa.Tamaño);
+                    graphics.DrawString(presa.Resistencia.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), presa.X + 10, presa.Y + 10);
+                }
             }
         }
 
@@ -170,6 +182,13 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                         selectedImage.Image = bmp;
                         selectedImage.Refresh();
                         Thread.Sleep(1);
+
+                        if(dTemporal.PresaAcechada != null && !dTemporal.VerificarRango(dTemporal.PresaAcechada))
+                        {
+                            dTemporal.PresaAcechada.AcechadaPor = null;
+                            dTemporal.PresaAcechada = null;
+                        }
+
                         foreach (Presa presa in presas)
                         {
                             if (dTemporal.VerificarRango(presa))
@@ -189,6 +208,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                         }
                         if(mejorPresa != null)
                         {
+                            mejorPresa.AcechadaPor = dTemporal;
                             dTemporal.PresaAcechada = mejorPresa;
                         }
                     }
