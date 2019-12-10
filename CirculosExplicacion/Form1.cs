@@ -232,7 +232,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                                 }
                             }
                         }
-                        if(mejorPresa != null)
+                        if(mejorPresa != null && !mejorPresa.Muerto)
                         {
                             mejorPresa.AcechadaPor = dTemporal;
                             dTemporal.PresaAcechada = mejorPresa;
