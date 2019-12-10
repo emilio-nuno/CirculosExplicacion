@@ -100,23 +100,23 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             //Presa.ObjetivoGlobal = Int32.Parse(nodosConectados.SelectedNode.Text); //Cambiar esto a otro lugar
         }
 
-        private void DibujarPresa(Presa presa, Bitmap bmp, int radio, Color color)
+        private void DibujarPresa(Presa presa, Bitmap bmp, Color color)
         {
             using (var graphics = Graphics.FromImage(bmp))
             {
                 graphics.Clear(Color.Transparent);
-                graphics.FillEllipse(new SolidBrush(color), presa.X - (radio / 2), presa.Y - (radio / 2), radio, radio);
+                graphics.FillEllipse(new SolidBrush(color), presa.X - (presa.Tamaño / 2), presa.Y - (presa.Tamaño / 2), presa.Tamaño, presa.Tamaño);
                 graphics.DrawString(presa.Resistencia.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), presa.X + 10, presa.Y + 10);
             }
         }
 
-        private void DibujarDepredador(Depredador depredador, Bitmap bmp, int radio, Color color)
+        private void DibujarDepredador(Depredador depredador, Bitmap bmp, Color color)
         {
             using (var graphics = Graphics.FromImage(bmp))
             {
                 graphics.Clear(Color.Transparent);
-                graphics.FillEllipse(new SolidBrush(color), depredador.X - (radio / 2), depredador.Y - (radio / 2), radio, radio);
-                graphics.DrawEllipse(new Pen(depredador.ColorRadio), depredador.X - ((depredador.RadioDepredador + radio) / 2), depredador.Y - ((depredador.RadioDepredador + radio) / 2), depredador.RadioDepredador + radio, depredador.RadioDepredador + radio); //Hacer esto opcional
+                graphics.FillEllipse(new SolidBrush(color), depredador.X - (depredador.Tamaño / 2), depredador.Y - (depredador.Tamaño / 2), depredador.Tamaño, depredador.Tamaño);
+                graphics.DrawEllipse(new Pen(depredador.ColorRadio), depredador.X - ((depredador.RadioDepredador + depredador.Tamaño) / 2), depredador.Y - ((depredador.RadioDepredador + depredador.Tamaño) / 2), depredador.RadioDepredador + depredador.Tamaño, depredador.RadioDepredador + depredador.Tamaño); //Hacer esto opcional
             }
         }
 
@@ -178,6 +178,11 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             Presa.ObjetivoGlobal = intentoObjetivo;
         }
 
+        private int DestinoAngular(Depredador depredador)
+        {
+            return 0;
+        }
+
         private int DestinoAleatorio(Depredador depredador) //Actualizar a que el nuevo objetivo aparezca en un nodo aleatorio en el cual no se encuentre ningún vértice
         {
             List<int> conexionesTemp = new List<int>(caminos[depredador.Actual].Keys);
@@ -198,14 +203,14 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 depredador.Y = caminos[depredador.Actual][depredador.Siguiente][depredador.Pos].Item2;
                 selectedImage.BackgroundImage = originalImage;
                 selectedImage.BackgroundImageLayout = ImageLayout.Zoom;
-                DibujarDepredador(depredador, bmp, 40, depredador.ColorEntidad);
+                DibujarDepredador(depredador, bmp, depredador.ColorEntidad);
                 depredador.Pos += depredador.Velocidad;
             }
             else
             {
                 depredador.X = caminos[depredador.Actual][depredador.Siguiente][caminos[depredador.Actual][depredador.Siguiente].Count - 1].Item1;
                 depredador.Y = caminos[depredador.Actual][depredador.Siguiente][caminos[depredador.Actual][depredador.Siguiente].Count - 1].Item2;
-                DibujarDepredador(depredador, bmp, 40, depredador.ColorEntidad);
+                DibujarDepredador(depredador, bmp, depredador.ColorEntidad);
                 depredador.Pos = 0;
                 depredador.Actual = depredador.Siguiente;
                 if(depredador.PresaAcechada == null)
@@ -223,14 +228,14 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                 presa.Y = caminos[presa.Actual][presa.Siguiente][presa.Pos].Item2;
                 selectedImage.BackgroundImage = originalImage;
                 selectedImage.BackgroundImageLayout = ImageLayout.Zoom; //Para que encuadre
-                DibujarPresa(presa, bmp, 40, presa.ColorEntidad);
+                DibujarPresa(presa, bmp, presa.ColorEntidad);
                 presa.Pos += presa.Velocidad;
             }
             else
             {
                 presa.X = caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item1;
                 presa.Y = caminos[presa.Actual][presa.Siguiente][caminos[presa.Actual][presa.Siguiente].Count - 1].Item2;
-                DibujarPresa(presa, bmp, 40, presa.ColorEntidad);
+                DibujarPresa(presa, bmp, presa.ColorEntidad);
                 presa.Pos = 0;
                 presa.Actual = presa.Siguiente;
 

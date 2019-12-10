@@ -10,8 +10,9 @@ namespace CirculosExplicacion
         private int siguiente;
         private Color colorRadio;
 
-        public Depredador(int inicial, int actual, int radio, int velocidad, Color color)
+        public Depredador(int inicial, int actual, int radio, int velocidad, Color color, int tamaño = 40)
         {
+            Tamaño = tamaño;
             ColorRadio = Color.Black;
             RadioDepredador = radio;
             Inicial = inicial;

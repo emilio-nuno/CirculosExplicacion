@@ -29,8 +29,9 @@ namespace CirculosExplicacion
             matrizAdy = matriz;
         }
 
-        public Presa(int actual, int inicial, int global, int velocidad, Color color)
+        public Presa(int actual, int inicial, int global, int velocidad, Color color, int tamaño = 40)
         {
+            Tamaño = tamaño;
             Actual = actual;
             Inicial = inicial;
             Velocidad = velocidad;

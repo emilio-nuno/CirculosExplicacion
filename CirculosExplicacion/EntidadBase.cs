@@ -11,6 +11,7 @@ namespace CirculosExplicacion
         private int pos;
         private int x;
         private int y;
+        private int tamaño;
 
         public int Actual { get => actual; set => actual = value; }
         public int Velocidad { get => velocidad; set => velocidad = value; }
@@ -19,5 +20,6 @@ namespace CirculosExplicacion
         public Color ColorEntidad { get => colorEntidad; set => colorEntidad = value; }
         public int X { get => x; set => x = value; }
         public int Y { get => y; set => y = value; }
+        public int Tamaño { get => tamaño; set => tamaño = value; }
     }
 }
