@@ -9,9 +9,14 @@ namespace CirculosExplicacion
         private Presa presaAcechada;
         private int siguiente;
         private Color colorRadio;
+        private static int tiempoQuedarse;
+        private bool quedarse;
+        private int tiempoQuedarseTemp;
 
         public Depredador(int inicial, int actual, int radio, int velocidad, Color color, int tamaño = 40)
         {
+            TiempoQuedarseTemp = 0;
+            Quedarse = false;
             Tamaño = tamaño;
             ColorRadio = Color.Black;
             RadioDepredador = radio;
@@ -20,6 +25,16 @@ namespace CirculosExplicacion
             Velocidad = velocidad;
             ColorEntidad = color;
             presaAcechada = null;
+        }
+
+        public bool DecisionQuedarse(int tamañoAristaPresa)
+        {
+            return (PresaAcechada.Velocidad * TiempoQuedarse) + PresaAcechada.Pos >= tamañoAristaPresa;
+        }
+
+        public static void InicializarTiempo(int tiempo)
+        {
+            TiempoQuedarse = tiempo;
         }
 
         public bool Colision(Presa presa)
@@ -53,5 +68,8 @@ namespace CirculosExplicacion
         public int RadioDepredador { get => radioDepredador; set => radioDepredador = value; }
         public int Siguiente { get => siguiente; set => siguiente = value; }
         public Color ColorRadio { get => colorRadio; set => colorRadio = value; }
+        public static int TiempoQuedarse { get => tiempoQuedarse; private set => tiempoQuedarse = value; }
+        public bool Quedarse { get => quedarse; set => quedarse = value; }
+        public int TiempoQuedarseTemp { get => tiempoQuedarseTemp; set => tiempoQuedarseTemp = value; }
     }
 }

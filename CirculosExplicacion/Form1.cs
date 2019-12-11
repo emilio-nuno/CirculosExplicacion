@@ -182,71 +182,102 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
                     }
                     foreach (Depredador dTemporal in depredadores)
                     {
-                        Presa mejorPresa = null;
                         if(dTemporal.PresaAcechada != null)
                         {
-                            CaminarDepredador(dTemporal, bmp, dTemporal.FactorVelocidad(dTemporal.PresaAcechada));
-                        }
-                        else
-                        {
-                            CaminarDepredador(dTemporal, bmp);
-                        }
-                        CaminarDepredador(dTemporal, bmp);
-                        selectedImage.Image = bmp;
-                        selectedImage.Refresh();
-                        Thread.Sleep(1);
-
-                        if(dTemporal.PresaAcechada != null)
-                        {
-                            if (dTemporal.Colision(dTemporal.PresaAcechada))
+                            if(dTemporal.Actual == dTemporal.PresaAcechada.Siguiente)
                             {
-                                dTemporal.PresaAcechada.PerderVida();
-                                if (dTemporal.PresaAcechada.Muerto)
+                                if(dTemporal.DecisionQuedarse(caminos[dTemporal.PresaAcechada.Actual][dTemporal.PresaAcechada.Siguiente].Count - 1))
                                 {
-                                    dTemporal.PresaAcechada.AcechadaPor = null;
-                                    dTemporal.PresaAcechada = null;
+                                    dTemporal.TiempoQuedarseTemp = Depredador.TiempoQuedarse;
                                 }
                             }
                         }
 
-                        if(dTemporal.PresaAcechada != null && !dTemporal.VerificarRango(dTemporal.PresaAcechada))
+                        if(dTemporal.TiempoQuedarseTemp > 0)
                         {
-                            dTemporal.PresaAcechada.AcechadaPor = null;
-                            dTemporal.PresaAcechada = null;
-                        }
-
-                        foreach (Presa presa in presas)
-                        {
-                            if (dTemporal.VerificarRango(presa) && presa.AcechadaPor == null) //Para verificar que no están siendo cazadas, hay error de referencias no eliminadas
+                            DibujarDepredador(dTemporal, bmp, dTemporal.ColorEntidad);
+                            if (dTemporal.PresaAcechada != null)
                             {
-                                if(mejorPresa == null) 
+                                if (dTemporal.Colision(dTemporal.PresaAcechada))
                                 {
-                                    mejorPresa = presa;
-                                }
-                                else
-                                {
-                                    if(dTemporal.DistanciaEuclideana(presa) < dTemporal.DistanciaEuclideana(mejorPresa))
+                                    dTemporal.PresaAcechada.PerderVida();
+                                    if (dTemporal.PresaAcechada.Muerto)
                                     {
-                                        mejorPresa = presa;
+                                        dTemporal.PresaAcechada.AcechadaPor = null;
+                                        dTemporal.PresaAcechada = null;
                                     }
                                 }
                             }
+                            dTemporal.TiempoQuedarseTemp -= 1;
                         }
-
-                        if (mejorPresa != null && !mejorPresa.Muerto)
+                        else
                         {
-                            if(dTemporal.PresaAcechada == null)
+                            Presa mejorPresa = null;
+                            if (dTemporal.PresaAcechada != null)
                             {
-                                mejorPresa.AcechadaPor = dTemporal;
-                                dTemporal.PresaAcechada = mejorPresa;
+                                CaminarDepredador(dTemporal, bmp, dTemporal.FactorVelocidad(dTemporal.PresaAcechada));
                             }
                             else
                             {
-                                dTemporal.PresaAcechada.AcechadaPor = null; //Removemos la referencia anterior
-                                dTemporal.PresaAcechada = null;
+                                CaminarDepredador(dTemporal, bmp);
+                            }
+                            CaminarDepredador(dTemporal, bmp);
+                            selectedImage.Image = bmp;
+                            selectedImage.Refresh();
+                            Thread.Sleep(1);
 
-                                mejorPresa.AcechadaPor = dTemporal;
-                                dTemporal.PresaAcechada = mejorPresa;
+                            if (dTemporal.PresaAcechada != null)
+                            {
+                                if (dTemporal.Colision(dTemporal.PresaAcechada))
+                                {
+                                    dTemporal.PresaAcechada.PerderVida();
+                                    if (dTemporal.PresaAcechada.Muerto)
+                                    {
+                                        dTemporal.PresaAcechada.AcechadaPor = null;
+                                        dTemporal.PresaAcechada = null;
+                                    }
+                                }
+                            }
+
+                            if (dTemporal.PresaAcechada != null && !dTemporal.VerificarRango(dTemporal.PresaAcechada))
+                            {
+                                dTemporal.PresaAcechada.AcechadaPor = null;
+                                dTemporal.PresaAcechada = null;
+                            }
+
+                            foreach (Presa presa in presas)
+                            {
+                                if (dTemporal.VerificarRango(presa) && presa.AcechadaPor == null) //Para verificar que no están siendo cazadas, hay error de referencias no eliminadas
+                                {
+                                    if (mejorPresa == null)
+                                    {
+                                        mejorPresa = presa;
+                                    }
+                                    else
+                                    {
+                                        if (dTemporal.DistanciaEuclideana(presa) < dTemporal.DistanciaEuclideana(mejorPresa))
+                                        {
+                                            mejorPresa = presa;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (mejorPresa != null && !mejorPresa.Muerto)
+                            {
+                                if (dTemporal.PresaAcechada == null)
+                                {
+                                    mejorPresa.AcechadaPor = dTemporal;
+                                    dTemporal.PresaAcechada = mejorPresa;
+                                }
+                                else
+                                {
+                                    dTemporal.PresaAcechada.AcechadaPor = null; //Removemos la referencia anterior
+                                    dTemporal.PresaAcechada = null;
+
+                                    mejorPresa.AcechadaPor = dTemporal;
+                                    dTemporal.PresaAcechada = mejorPresa;
+                                }
                             }
                         }
                     }
