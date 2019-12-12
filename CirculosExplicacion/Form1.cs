@@ -285,7 +285,7 @@ namespace CirculosExplicacion //TODO: CAMBIAR EL SORT A EL MAYOR DE LOS DOS RADI
             }
         }
 
-        private void ObjetivoAleatorio() //Actualizar a que el nuevo objetivo aparezca en un nodo aleatorio en el cual no se encuentre ningún vértice
+        private void ObjetivoAleatorio() //Actualizar a que el nuevo objetivo aparezca en un nodo aleatorio en el cual no se encuentre ningún vértice pero que esté en componente
         {
             verticesActuales.Clear();
             Random rnd = new Random();

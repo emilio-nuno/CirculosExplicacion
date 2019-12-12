@@ -46,7 +46,7 @@ namespace CirculosExplicacion
             NuevoDestino(); //Inicializa el primer destino
         }
 
-        public  void NuevoDestino()
+        public bool NuevoDestino()
         {
             for (int i = 0; i <= caminosMinimos[objetivoLocal].Count - 2; i++)
             {
@@ -55,6 +55,7 @@ namespace CirculosExplicacion
                     siguiente = caminosMinimos[objetivoLocal][i + 1];
                 }
             }
+            return true;
         }
 
         public void Recalcular()
